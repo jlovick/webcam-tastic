@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>process_all_images (Webcam_processor::Webcam_Instructor)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 98</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">process_all_images</span>( <span class="ruby-identifier">awhere</span> )
+      <span class="ruby-identifier">camera_id</span> =  <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_webcam_id</span>( <span class="ruby-ivar">@current_webcam</span> )
+      <span class="ruby-identifier">tesr</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_webcam_data_area</span>( <span class="ruby-identifier">camera_id</span>, <span class="ruby-ivar">@area</span> )
+      <span class="ruby-identifier">exp_list</span> = <span class="ruby-constant">ImageStats</span><span class="ruby-operator">::</span><span class="ruby-constant">Experiment_Table_List</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>)
+      <span class="ruby-identifier">exp</span> = <span class="ruby-identifier">exp_list</span>.<span class="ruby-identifier">get_experiment_id</span>(<span class="ruby-ivar">@experiment</span>)
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; experiment #{@experiment} is #{exp} &quot;</span>
+      <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">exp</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>)
+        <span class="ruby-identifier">images</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_all_unprocessed_camera_images</span>(<span class="ruby-identifier">camera_id</span>, <span class="ruby-identifier">exp</span>, <span class="ruby-identifier">awhere</span>)
+        <span class="ruby-identifier">images_count</span> = <span class="ruby-identifier">images</span>.<span class="ruby-identifier">length</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; #{images_count}&quot;</span>
+        <span class="ruby-ivar">@it</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">sttime</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">new</span>
+        <span class="ruby-identifier">images</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">thisimage</span><span class="ruby-operator">|</span> 
+          <span class="ruby-identifier">thisimage</span> = <span class="ruby-ivar">@pw</span>.<span class="ruby-identifier">if_required_get_missing_image_from_url</span>(<span class="ruby-identifier">thisimage</span>, <span class="ruby-ivar">@current_webcam</span>)
+          <span class="ruby-ivar">@pw</span>.<span class="ruby-identifier">send_image_to_process</span>(<span class="ruby-identifier">sttime</span>, <span class="ruby-identifier">images_count</span>, <span class="ruby-identifier">thisimage</span>, <span class="ruby-identifier">tesr</span>, <span class="ruby-ivar">@operation</span> ,<span class="ruby-identifier">exp</span>) 
+         
+          <span class="ruby-comment cmt">#   }</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

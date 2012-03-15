@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>add_stats_to_collection (Mysql_Handler::Mysql_handler)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File mysql_handler.rb, line 738</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_stats_to_collection</span>(<span class="ruby-identifier">src_file_id</span>, <span class="ruby-identifier">table_id</span>, <span class="ruby-identifier">table_key</span>, <span class="ruby-identifier">experiment_id</span>, <span class="ruby-identifier">channel</span> )
+    <span class="ruby-identifier">query</span> = <span class="ruby-node">&quot;INSERT INTO  `webcam_processing`.`New_Stats` ( `Stat_ID` , `src_file_id` , `Table_id` , `Table_key`,  `Experiment_id`, `Channel` ) VALUES 
+    ( NULL , #{src_file_id}, #{table_id}, #{table_key}, #{experiment_id}, #{channel} )&quot;</span>
+    <span class="ruby-comment cmt"># need ot make sure experiment is valid also src_file_id</span>
+    <span class="ruby-identifier">res</span> = <span class="ruby-ivar">@dbh</span>.<span class="ruby-identifier">query</span>(<span class="ruby-identifier">query</span>)
+  <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">Mysql</span><span class="ruby-operator">::</span><span class="ruby-constant">Error</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error adding stats in to new collection table `New_Stats` : #{query}&quot;</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error code: #{e.errno}&quot;</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error message: #{e.error}&quot;</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error SQLSTATE: #{e.sqlstate}&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value str">&quot;sqlstate&quot;</span>)
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

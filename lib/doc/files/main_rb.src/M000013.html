@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>difference_image (main.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File main.rb, line 311</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">difference_image</span>()
+  <span class="ruby-identifier">cam</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">control_exp</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-identifier">crater_exp</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">awhere</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">channel</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-identifier">img</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-identifier">id_file</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-constant">ARGV</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">arg</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">arg</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--camera=([\ 0-9A-Za-z._]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">cam</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--control_exp=([\ 0-9A-Za-z._\/]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">control_exp</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">$1</span>)
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--crater_exp=([\ 0-9A-Za-z._\/]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">crater_exp</span>=<span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span>  <span class="ruby-regexp re">/\A--channel=([\ 0-9A-Za-z._\/]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">channel</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">$1</span>)
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--where=((.*)+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">awhere</span>=<span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+   
+  <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span>( <span class="ruby-identifier">cam</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">crater_exp</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">awhere</span> <span class="ruby-keyword kw">and</span> (<span class="ruby-identifier">control_exp</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)  <span class="ruby-keyword kw">and</span> (<span class="ruby-identifier">channel</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>))
+    <span class="ruby-identifier">print</span> <span class="ruby-node">&quot; cant understand options.... #{cam}, #{crater_exp}, #{channel}, #{awhere}&quot;</span>
+    <span class="ruby-identifier">pp</span> <span class="ruby-identifier">control_exp</span>
+    <span class="ruby-identifier">usage</span>()
+  <span class="ruby-keyword kw">end</span>
+  
+  <span class="ruby-identifier">wc</span> = <span class="ruby-constant">Webcam_processor</span><span class="ruby-operator">::</span><span class="ruby-constant">Webcam_Instructor</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cam</span>,<span class="ruby-value str">&quot;&quot;</span>, <span class="ruby-value str">&quot;&quot;</span>, <span class="ruby-value str">&quot;&quot;</span>)
+  <span class="ruby-identifier">wc</span>.<span class="ruby-identifier">difference_image</span>(<span class="ruby-identifier">awhere</span>, <span class="ruby-identifier">control_exp</span>,<span class="ruby-identifier">crater_exp</span>, <span class="ruby-identifier">channel</span>)  
+  <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

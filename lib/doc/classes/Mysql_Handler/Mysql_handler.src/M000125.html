@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>get_all_unprocessed_camera_images (Mysql_Handler::Mysql_handler)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File mysql_handler.rb, line 291</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get_all_unprocessed_camera_images</span>(<span class="ruby-identifier">camera</span>, <span class="ruby-identifier">experiment</span>, <span class="ruby-identifier">awhere</span>)
+        
+    <span class="ruby-identifier">query_1</span> = <span class="ruby-value str">&quot; SELECT `id`,`filename`,`remote_URL`,`image_date`
+                      FROM `src_files_table`
+                      WHERE `src_camera` =  '&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">camera</span>.<span class="ruby-identifier">to_s</span><span class="ruby-operator">+</span><span class="ruby-value str">&quot;'&quot;</span>
+      
+    <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">awhere!</span>= <span class="ruby-keyword kw">nil</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">awhere</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+      <span class="ruby-identifier">query_1</span> <span class="ruby-operator">+=</span>  <span class="ruby-value str">&quot;  AND &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">awhere</span>.<span class="ruby-identifier">to_s</span>
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-identifier">query_2</span> = <span class="ruby-value str">&quot; SELECT Distinct `src_file_ID`
+                      FROM `New_Stats` WHERE `Experiment_id` = '&quot;</span><span class="ruby-operator">+</span>(<span class="ruby-identifier">experiment</span>.<span class="ruby-identifier">to_s</span>) <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;'&quot;</span>
+                      
+    <span class="ruby-identifier">pp</span> <span class="ruby-identifier">query_1</span>
+    <span class="ruby-identifier">res_a</span> = <span class="ruby-ivar">@dbh</span>.<span class="ruby-identifier">query</span>(<span class="ruby-identifier">query_1</span>)
+    <span class="ruby-identifier">res_b</span> = <span class="ruby-ivar">@dbh</span>.<span class="ruby-identifier">query</span>(<span class="ruby-identifier">query_2</span>)
+    <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; finding unprocessed rows &quot;</span>
+    <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">res_a</span>.<span class="ruby-identifier">num_rows</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+      <span class="ruby-identifier">all_files</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-identifier">done_files</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-identifier">raw_files</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-identifier">wanted_files</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-identifier">pass_out</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-identifier">res_b</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">row</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">done_files</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">row</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">to_i</span> )
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">res_a</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">row</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">raw_files</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">row</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">to_i</span> )
+        <span class="ruby-identifier">my_file</span> = <span class="ruby-constant">Image_data</span><span class="ruby-operator">::</span><span class="ruby-constant">Image_file_data</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">row</span>[<span class="ruby-value">0</span>], <span class="ruby-identifier">row</span>[<span class="ruby-value">1</span>], <span class="ruby-identifier">row</span>[<span class="ruby-value">2</span>], <span class="ruby-identifier">row</span>[<span class="ruby-value">3</span>] )
+        <span class="ruby-identifier">pass_out</span>[<span class="ruby-identifier">row</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">to_i</span>] = <span class="ruby-identifier">my_file</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">done_files</span>.<span class="ruby-identifier">sort</span>
+      <span class="ruby-identifier">raw_files</span>.<span class="ruby-identifier">sort</span>
+      <span class="ruby-identifier">wanted_files</span> =  <span class="ruby-identifier">raw_files</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">done_files</span>
+         
+      <span class="ruby-identifier">wanted_files</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">erow</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">my_file</span> = <span class="ruby-identifier">pass_out</span>[<span class="ruby-identifier">erow</span>]
+        <span class="ruby-identifier">all_files</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">my_file</span>.<span class="ruby-identifier">clone</span> )
+        <span class="ruby-comment cmt"># puts &quot; found #{all_files.length} items &quot;</span>
+      <span class="ruby-keyword kw">end</span>
+       
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; found all unprocessed items #{all_files.length}  out of a total of #{raw_files.length}  #{100-((all_files.length) / (raw_files.length))*100.0}% done&quot;</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">all_files</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;unable to return all camera images URL, \n query_1 was -: #{query_1} \n query_2 was :- #{query_2}&quot;</span> 
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">Mysql</span><span class="ruby-operator">::</span><span class="ruby-constant">Error</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error adding webcam image to table (get_all_unprocessed_camera_images 239) : #{query_1} #{query_2}&quot;</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error code: #{e.errno}&quot;</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error message: #{e.error}&quot;</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error SQLSTATE: #{e.sqlstate}&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value str">&quot;sqlstate&quot;</span>)
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

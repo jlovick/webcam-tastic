@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>make_thermal_stats (Webcam_processor::Webcam_Instructor)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 630</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">make_thermal_stats</span>( <span class="ruby-identifier">sql_where</span> )
+      <span class="ruby-identifier">camera_id</span> =  <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_webcam_id</span>( <span class="ruby-ivar">@current_webcam</span> )
+      <span class="ruby-identifier">data_tables</span> = <span class="ruby-constant">ImageStats</span><span class="ruby-operator">::</span><span class="ruby-constant">Stat_Table_List</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>)
+      <span class="ruby-identifier">exp_table</span> = <span class="ruby-constant">ImageStats</span><span class="ruby-operator">::</span><span class="ruby-constant">Experiment_Table_List</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>)
+      <span class="ruby-identifier">chlist</span> = <span class="ruby-constant">ImageStats</span><span class="ruby-operator">::</span><span class="ruby-constant">Channel_Table_List</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>)
+      <span class="ruby-identifier">exp_id</span>=<span class="ruby-identifier">exp_table</span>.<span class="ruby-identifier">get_experiment_id</span>(<span class="ruby-value str">&quot;crater - control&quot;</span>)
+      <span class="ruby-identifier">exp_source</span> = <span class="ruby-identifier">exp_table</span>.<span class="ruby-identifier">get_experiment_id</span>(<span class="ruby-value str">&quot;luminesence_enhance&quot;</span>)
+      <span class="ruby-identifier">tf_stat_table_id</span> = <span class="ruby-identifier">data_tables</span>.<span class="ruby-identifier">get_table_id</span>(<span class="ruby-value str">&quot;Thermal_Flux_Table&quot;</span>)
+      <span class="ruby-identifier">ch_id</span> = <span class="ruby-identifier">chlist</span>.<span class="ruby-identifier">get_channel_id</span>(<span class="ruby-value str">&quot;combined&quot;</span>)
+      <span class="ruby-identifier">img</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_all_images_still_needing_stat_calculated</span>(<span class="ruby-identifier">camera_id</span>, <span class="ruby-identifier">exp_id</span>, <span class="ruby-identifier">tf_stat_table_id</span>, <span class="ruby-identifier">sql_where</span>)
+      <span class="ruby-identifier">hist_stat_table_id</span> = <span class="ruby-identifier">data_tables</span>.<span class="ruby-identifier">get_table_id</span>(<span class="ruby-value str">&quot;Histogram_Table&quot;</span>)
+      <span class="ruby-identifier">mean_stat_table_id</span> = <span class="ruby-identifier">data_tables</span>.<span class="ruby-identifier">get_table_id</span>(<span class="ruby-value str">&quot;Mean_Table&quot;</span>)
+      <span class="ruby-identifier">variance_stat_table_id</span> = <span class="ruby-identifier">data_tables</span>.<span class="ruby-identifier">get_table_id</span>(<span class="ruby-value str">&quot;Variance_Table&quot;</span>)
+      <span class="ruby-identifier">img</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">img_a</span><span class="ruby-operator">|</span>
+        <span class="ruby-comment cmt"># pp img_a</span>
+        <span class="ruby-identifier">img_id</span> = <span class="ruby-identifier">img_a</span>.<span class="ruby-identifier">id</span>
+        <span class="ruby-identifier">sca</span> = <span class="ruby-constant">ImageStats</span><span class="ruby-operator">::</span><span class="ruby-constant">Stats_Collection</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>, <span class="ruby-identifier">img_id</span>, <span class="ruby-identifier">exp_source</span>, <span class="ruby-identifier">ch_id</span>)
+        <span class="ruby-identifier">scb</span> = <span class="ruby-constant">ImageStats</span><span class="ruby-operator">::</span><span class="ruby-constant">Stats_Collection</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>, <span class="ruby-identifier">img_id</span>, <span class="ruby-identifier">exp_id</span>, <span class="ruby-identifier">ch_id</span>)
+          
+        <span class="ruby-comment cmt"># pp scb</span>
+        <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">scb</span>.<span class="ruby-identifier">stats_collection</span>[<span class="ruby-value str">&quot;ImageStats::Histogram_Table&quot;</span>] )
+          <span class="ruby-identifier">crater_hist_stat</span> = <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">stats_collection</span>[<span class="ruby-value str">&quot;ImageStats::Histogram_Table&quot;</span>].<span class="ruby-identifier">value</span>[<span class="ruby-value str">&quot;DATA&quot;</span>].<span class="ruby-identifier">strip</span>
+          
+          <span class="ruby-comment cmt">#    pp crater_hist_stat</span>
+          <span class="ruby-identifier">crater_hist</span> =  <span class="ruby-constant">NArray</span>.<span class="ruby-identifier">to_na</span>((<span class="ruby-constant">Marshal</span>.<span class="ruby-identifier">load</span>(<span class="ruby-identifier">crater_hist_stat</span>))) 
+          <span class="ruby-comment cmt">#       j=0</span>
+          
+          <span class="ruby-comment cmt"># #puts &quot; histogram #{ crater_hist.to_string } &quot;</span>
+          <span class="ruby-identifier">crater_mean_s</span> = <span class="ruby-identifier">sca</span>.<span class="ruby-identifier">stats_collection</span>[<span class="ruby-value str">&quot;ImageStats::Mean_Table&quot;</span>].<span class="ruby-identifier">value</span>[<span class="ruby-value str">&quot;DATA&quot;</span>].<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">to_f</span>
+          <span class="ruby-comment cmt">#       puts &quot; crater_mean is #{crater_mean} &quot;</span>
+          <span class="ruby-identifier">crater_var_s</span> = <span class="ruby-identifier">sca</span>.<span class="ruby-identifier">stats_collection</span>[<span class="ruby-value str">&quot;ImageStats::Variance_Table&quot;</span>].<span class="ruby-identifier">value</span>[<span class="ruby-value str">&quot;DATA&quot;</span>].<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">to_f</span>
+          <span class="ruby-identifier">crater_mean_t</span> = <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">stats_collection</span>[<span class="ruby-value str">&quot;ImageStats::Mean_Table&quot;</span>].<span class="ruby-identifier">value</span>[<span class="ruby-value str">&quot;DATA&quot;</span>].<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">to_f</span>
+          <span class="ruby-comment cmt">#       puts &quot; crater_mean is #{crater_mean} &quot;</span>
+          <span class="ruby-identifier">crater_var_t</span> = <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">stats_collection</span>[<span class="ruby-value str">&quot;ImageStats::Variance_Table&quot;</span>].<span class="ruby-identifier">value</span>[<span class="ruby-value str">&quot;DATA&quot;</span>].<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">to_f</span>
+          <span class="ruby-identifier">crater_mean</span> = <span class="ruby-identifier">crater_mean_s</span>.<span class="ruby-identifier">to_f</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">crater_mean_t</span>.<span class="ruby-identifier">to_f</span> <span class="ruby-comment cmt">#find out the mean of the control group</span>
+          <span class="ruby-identifier">crater_var</span> = <span class="ruby-identifier">crater_var_s</span>.<span class="ruby-identifier">to_f</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">crater_var_t</span>.<span class="ruby-identifier">to_f</span> <span class="ruby-comment cmt"># find out the control group var</span>
+          <span class="ruby-comment cmt">#       puts &quot;crater_var is #{crater_var}&quot;</span>
+          <span class="ruby-identifier">hist_start</span> = (<span class="ruby-identifier">crater_mean</span>.<span class="ruby-identifier">to_f</span> <span class="ruby-operator">+</span> (<span class="ruby-identifier">crater_var</span>.<span class="ruby-identifier">to_f</span> <span class="ruby-operator">/</span> <span class="ruby-value">2.0</span>)).<span class="ruby-identifier">to_i</span>  <span class="ruby-comment cmt">#work out where to start counting up on the histogram from,</span>
+          <span class="ruby-comment cmt">#      hist_sum = 0</span>
+          <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">hist_start</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">0</span> )
+            <span class="ruby-identifier">hist_start</span> = <span class="ruby-value">0</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">hist_start</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">255</span>)
+            <span class="ruby-identifier">hist_sum</span> = <span class="ruby-value">0</span>
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">hist_sum</span> = <span class="ruby-identifier">crater_hist</span>[<span class="ruby-identifier">hist_start</span><span class="ruby-operator">..</span><span class="ruby-value">255</span>].<span class="ruby-identifier">sum</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-comment cmt">#        hist_suma = 0</span>
+          
+          <span class="ruby-comment cmt">#      crater_hist.each do |i|</span>
+          <span class="ruby-comment cmt">#        puts &quot; #{j} #{i}&quot;</span>
+          <span class="ruby-comment cmt">#        j+= 1</span>
+          <span class="ruby-comment cmt">#        if (j &gt; hist_start)</span>
+          <span class="ruby-comment cmt">#          hist_suma += i</span>
+          <span class="ruby-comment cmt">#        end</span>
+          <span class="ruby-comment cmt">#      end</span>
+          <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">add_table</span>(<span class="ruby-value str">&quot;Thermal_Flux_Table&quot;</span>, <span class="ruby-identifier">:flux</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">hist_sum</span> ) 
+          <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; added flux entry #{img_id} from histogram range ( #{hist_start} to 255 ) with value sum of : #{hist_sum} &quot;</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; entry #{img_id} appears not to have a histogram?&quot;</span>
+           
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; finnished adding flux table entries&quot;</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

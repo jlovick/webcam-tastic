@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>read_st_hel_date (read_st_hel_date.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File read_st_hel_date.rb, line 6</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read_st_hel_date</span>( <span class="ruby-identifier">filename</span> )
+      
+    <span class="ruby-identifier">ft</span> = <span class="ruby-keyword kw">nil</span>
+    <span class="ruby-identifier">open</span>(<span class="ruby-identifier">filename</span>, <span class="ruby-value str">'rb'</span>) <span class="ruby-keyword kw">do</span>  <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">f</span>.<span class="ruby-identifier">seek</span>(<span class="ruby-value">24</span>,<span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">SEEK_SET</span>)
+    <span class="ruby-identifier">astr</span> = <span class="ruby-identifier">f</span>.<span class="ruby-identifier">read</span>(<span class="ruby-value">8</span>)
+  <span class="ruby-comment cmt">#  puts &quot;astr:-#{astr}&quot;</span>
+    <span class="ruby-keyword kw">if</span> (  <span class="ruby-identifier">astr</span> <span class="ruby-operator">!=</span> <span class="ruby-value str">&quot;Webcam32&quot;</span>)
+      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">f</span>.<span class="ruby-identifier">seek</span>(<span class="ruby-value">30</span>,<span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">SEEK_SET</span>)
+    <span class="ruby-identifier">dstr</span>  = <span class="ruby-identifier">f</span>.<span class="ruby-identifier">read</span>(<span class="ruby-value">35</span>)
+    <span class="ruby-identifier">mdstr</span> =  <span class="ruby-constant">StringScanner</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">dstr</span>.<span class="ruby-identifier">to_s</span>)
+    <span class="ruby-identifier">rb</span> = <span class="ruby-identifier">mdstr</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-regexp re">/(\d+)\/(\d+)\/(\d+) (\d+):(\d+):(\d+)/</span>)
+    <span class="ruby-identifier">ms</span> = <span class="ruby-identifier">dstr</span>[<span class="ruby-identifier">rb</span><span class="ruby-operator">-</span><span class="ruby-value">17</span><span class="ruby-operator">..</span><span class="ruby-identifier">rb</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>]
+   <span class="ruby-comment cmt"># puts &quot;|#{ms}| |#{rb}|&quot;</span>
+  <span class="ruby-comment cmt">#  puts &quot;#{filename} image time is supposedly :- \&quot;#{dstr}\&quot;   :- 20#{ms[6..7]}/#{ms[0..1]}/#{ms[3..4]}   #{ms[9..10]}:#{ms[12..13]}:#{ms[15..16]} &quot;</span>
+    <span class="ruby-identifier">ft</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">utc</span>(<span class="ruby-node">&quot;20#{ms[6..7]}&quot;</span>,<span class="ruby-identifier">ms</span>[<span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-value">1</span>],<span class="ruby-identifier">ms</span>[<span class="ruby-value">3</span><span class="ruby-operator">..</span><span class="ruby-value">4</span>],<span class="ruby-identifier">ms</span>[<span class="ruby-value">9</span><span class="ruby-operator">..</span><span class="ruby-value">10</span>],<span class="ruby-identifier">ms</span>[<span class="ruby-value">12</span><span class="ruby-operator">..</span><span class="ruby-value">13</span>],<span class="ruby-identifier">ms</span>[<span class="ruby-value">15</span><span class="ruby-operator">..</span><span class="ruby-value">16</span>] )
+<span class="ruby-comment cmt">##    puts &quot; time :- #{ft.to_s}&quot;</span>
+  <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">ft</span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

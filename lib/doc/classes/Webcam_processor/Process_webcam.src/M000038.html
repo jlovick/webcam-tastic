@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>add_in_images (Webcam_processor::Process_webcam)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 1002</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_in_images</span>( <span class="ruby-identifier">name</span>, <span class="ruby-identifier">path</span>, <span class="ruby-identifier">grep</span>,  <span class="ruby-identifier">ext</span>)
+      <span class="ruby-identifier">wid</span> =  <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_webcam_id</span>(<span class="ruby-identifier">name</span>)
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; webcam id is #{wid}&quot;</span>
+      <span class="ruby-identifier">filenames</span> = <span class="ruby-identifier">process_path</span>(<span class="ruby-identifier">path</span>,<span class="ruby-identifier">grep</span>, <span class="ruby-identifier">ext</span>)
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;got all files to process #{filenames.length}&quot;</span>
+      <span class="ruby-identifier">allready_present</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_all_camera_image_files</span>(<span class="ruby-identifier">wid</span>)
+      <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">allready_present</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>)
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;got list of files present.. #{allready_present.length}&quot;</span>
+        <span class="ruby-identifier">filenames</span>.<span class="ruby-identifier">sort</span>
+        <span class="ruby-identifier">allready_present</span>.<span class="ruby-identifier">sort</span> 
+        <span class="ruby-identifier">less_filenames</span> = <span class="ruby-identifier">filenames</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">allready_present</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; removed all duplicate images.... #{less_filenames.length} files left \n now adding these images to db &quot;</span>
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-identifier">less_filenames</span> = <span class="ruby-identifier">filenames</span> 
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">less_filenames</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">fn</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">image_date</span> = <span class="ruby-identifier">get_image_date</span>(<span class="ruby-identifier">fn</span>,<span class="ruby-identifier">ext</span>)
+        <span class="ruby-comment cmt"># date format is :2008-03-20 11:01:52</span>
+        <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">add_webcam_image</span>(<span class="ruby-identifier">wid</span>,<span class="ruby-identifier">fn</span>,<span class="ruby-value str">&quot;NULL&quot;</span>,<span class="ruby-identifier">image_date</span>.<span class="ruby-identifier">strftime</span>(<span class="ruby-value str">&quot;%Y-%m-%d %H:%M:%S&quot;</span>))
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; added file #{fn} OK&quot;</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">less_filenames</span>.<span class="ruby-identifier">clear</span>
+      <span class="ruby-identifier">filenames</span>.<span class="ruby-identifier">clear</span>
+      <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">allready_present</span>) <span class="ruby-keyword kw">then</span>
+        <span class="ruby-identifier">allready_present</span>.<span class="ruby-identifier">clear</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; done adding images to the DB &quot;</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,60 @@
+Observation of volcanoes through webcams: Tools and techniques
+
+This work explores techniques for deriving quantitative data from webcam
+observations. It illustrates the role that webcams can play in volcano
+monitoring, and shows our recently developed tools for the collation and
+dissemination of this data.
+
+Over the past 5 years, digital cameras have been installed at a number of
+volcanoes to allow the general public to see volcanic activity from the
+comfort of their own homes. In the last 3 years these webcam images have
+become part of the twice-daily volcano monitoring report by the remote
+sensing team of the Alaska Volcano Observatory (AVO).
+
+To allow comprehensive and systematic analysis, a database has been created
+containing all AVO webcam images as well as images from St. Helens and
+three KVERT webcams for Bezymianny, Klyucheskoy and Shiveluch. In total,
+some 1.6 million images are currently held. The number increases daily as
+new images are obtained and processed.
+
+The database holds additional information about each image such as both
+image-wide and localized-region statistics.  Our tools have been developed
+to answer specific questions utilizing this data.
+
+Of the current 1.6 million images in the database, a very small percentage
+is considered interesting for volcano monitoring; the remainder can be
+ignored due to complete cloud cover or (for nocturnal images) lack of
+luminescence. We have developed a tool for automatically isolating
+uninteresting images (primarily based on image histograms.) Uninteresting
+images are tagged, which allows for them to be excluded from further
+processing.
+
+Our next tool is an automated system for isolating and measuring nocturnal
+luminescence. This tool has been developed using images of St. Helens and
+is being extended to work with other webcams where nightime lava glow have
+been seen. The system works by first minimizing each camera's unique dark
+current and amplification noise signals and then establishes if any pixels
+fulfill a number of criteria that would indicate they are real "glow"
+pixels.
+
+A third tool integrates the webcam data into Google Earth, allowing the
+height of plumes to be easily estimated and also the location of features
+on the sides of the volcano to be accurately placed on to the
+ground/GoogleMap surface. This tool makes visualization of multiple webcams
+of a single volcano easy.
+
+The recent eruptive phase of St. Helens has prompted the development of  a
+system for measuring 'dome growth'. A technique using stacks of images and
+the Irani-Peleg super-resolution algorithm to estimate subpixel region
+growth is being tested at the moment.
+
+The final tool presented (currently under development) is a simple volcanic
+plume finder. It works by analyzing the RGB histograms of key regions
+around the volcano vent and flagging image statistics which indicate the
+possible presence of steam. It is postulated that when adjusted for local
+climatic conditions the amount of steaming may be indicative of change at a
+volcano.
+
+These techinques aim to move the analysis of webcam images into an
+operational framework on a sound scientific footing.
+

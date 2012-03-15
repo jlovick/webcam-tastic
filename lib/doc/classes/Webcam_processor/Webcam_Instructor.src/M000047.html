@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>day_month_year_stats (Webcam_processor::Webcam_Instructor)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 77</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">day_month_year_stats</span>(<span class="ruby-identifier">filename</span>)
+      <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">filename</span>, <span class="ruby-value str">&quot;w&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">wfl</span><span class="ruby-operator">|</span>
+        <span class="ruby-ivar">@current_webcam</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span>  <span class="ruby-operator">|</span><span class="ruby-identifier">wm</span><span class="ruby-operator">|</span>
+          <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; doing ymd stats for #{wm}&quot;</span>
+          <span class="ruby-identifier">wid</span> =  <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_webcam_id</span>(<span class="ruby-identifier">wm</span>)
+          <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">year</span> <span class="ruby-keyword kw">in</span> (<span class="ruby-value">2003</span><span class="ruby-operator">..</span><span class="ruby-value">2009</span>)
+            <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">month</span> <span class="ruby-keyword kw">in</span> (<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">12</span>)
+              <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">day</span> <span class="ruby-keyword kw">in</span> (<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">31</span>)
+                <span class="ruby-identifier">res</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">count_images</span>(<span class="ruby-identifier">wid</span>, <span class="ruby-identifier">day</span>, <span class="ruby-identifier">month</span>, <span class="ruby-identifier">year</span>)
+                <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">res</span>.<span class="ruby-identifier">to_i</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+                  <span class="ruby-identifier">wfl</span>.<span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; for #{wm} #{year.to_s}/#{month.to_s}/#{day.to_s}  #{res.to_s} images found&quot;</span>
+                <span class="ruby-keyword kw">end</span>
+              <span class="ruby-keyword kw">end</span>  
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; done #{year} \n&quot;</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; finished outputing dmy stats \n&quot;</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

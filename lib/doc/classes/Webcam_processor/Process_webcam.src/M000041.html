@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>if_required_get_missing_image_from_url (Webcam_processor::Process_webcam)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 1070</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">if_required_get_missing_image_from_url</span>(<span class="ruby-identifier">thisimage</span>, <span class="ruby-identifier">current_webcam</span>)
+      <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">url</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">6</span>)
+        <span class="ruby-comment cmt"># dont do anything if their is no valid URL</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">not</span> ((<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;NULL&quot;</span>) <span class="ruby-operator">^</span> (<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">nil</span> )) <span class="ruby-comment cmt"># see if it exists (XOR)</span>
+          <span class="ruby-keyword kw">if</span> ((<span class="ruby-keyword kw">not</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> )) <span class="ruby-operator">^</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> )) <span class="ruby-comment cmt">#is it a valid file</span>
+            <span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> = <span class="ruby-value str">&quot;NULL&quot;</span> <span class="ruby-comment cmt"># ok file is gone, so delete it from DB</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+  
+        <span class="ruby-keyword kw">if</span> ((<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;NULL&quot;</span>) <span class="ruby-operator">^</span> (<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">nil</span> )) <span class="ruby-comment cmt">#XOR</span>
+          <span class="ruby-comment cmt"># #work out where we are going to put it</span>
+          <span class="ruby-identifier">base_fn</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">image_date</span>)
+          <span class="ruby-identifier">year_str</span> = <span class="ruby-identifier">base_fn</span>.<span class="ruby-identifier">year</span>
+          <span class="ruby-identifier">month_str</span> = <span class="ruby-identifier">base_fn</span>.<span class="ruby-identifier">strftime</span>(<span class="ruby-value str">&quot;%b&quot;</span>)
+          <span class="ruby-comment cmt"># of tyhis style date_filename = 2008-Thu-Mar-20-05:55:02-HD.jpeg</span>
+          <span class="ruby-identifier">date_filename</span> = <span class="ruby-identifier">base_fn</span>.<span class="ruby-identifier">strftime</span>(<span class="ruby-value str">&quot;%Y-%a-%b-%d-%H:%M:%S&quot;</span>)<span class="ruby-operator">+</span><span class="ruby-value str">&quot;.jpeg&quot;</span>
+          <span class="ruby-comment cmt"># #create the filename</span>
+          <span class="ruby-identifier">gt</span> = <span class="ruby-constant">General_tools</span><span class="ruby-operator">::</span><span class="ruby-constant">GT</span>.<span class="ruby-identifier">new</span>()
+          <span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> = <span class="ruby-value str">'/raid/webcam-archive/'</span><span class="ruby-operator">+</span> <span class="ruby-identifier">current_webcam</span>.<span class="ruby-identifier">to_s</span>
+          <span class="ruby-identifier">gt</span>.<span class="ruby-identifier">make_dir_if_doesnt_exist</span>(<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span>)
+          <span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">'/'</span><span class="ruby-operator">+</span> <span class="ruby-identifier">year_str</span>.<span class="ruby-identifier">to_s</span> 
+          <span class="ruby-identifier">gt</span>.<span class="ruby-identifier">make_dir_if_doesnt_exist</span>(<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span>)
+          <span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> <span class="ruby-operator">+=</span>  <span class="ruby-value str">'/'</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">month_str</span>.<span class="ruby-identifier">to_s</span> 
+          <span class="ruby-identifier">gt</span>.<span class="ruby-identifier">make_dir_if_doesnt_exist</span>(<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span>)
+    
+          <span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">'/'</span><span class="ruby-operator">+</span> <span class="ruby-identifier">date_filename</span>.<span class="ruby-identifier">to_s</span>
+          <span class="ruby-comment cmt"># get the image</span>
+          <span class="ruby-identifier">myuser</span> = <span class="ruby-value str">&quot;internalavo&quot;</span>
+          <span class="ruby-identifier">mypassword</span> = <span class="ruby-value str">&quot;volcsrus&quot;</span>
+          <span class="ruby-identifier">get_image_from_url</span>(<span class="ruby-identifier">thisimage</span>, <span class="ruby-identifier">myuser</span>,<span class="ruby-identifier">mypassword</span>)
+          <span class="ruby-comment cmt"># #then update the image record</span>
+          <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">update_image_record</span>(<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">id</span>, <span class="ruby-value str">&quot;filename&quot;</span>, <span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span>)
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-comment cmt"># #then return the updated thisimage record</span>
+  
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">thisimage</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

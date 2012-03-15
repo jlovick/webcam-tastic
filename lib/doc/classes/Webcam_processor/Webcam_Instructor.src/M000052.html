@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>find_useful (Webcam_processor::Webcam_Instructor)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 286</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">find_useful</span>( <span class="ruby-identifier">criteria</span> )
+      <span class="ruby-comment cmt"># #goes through a  camera's images/stats and marks out the ones that look</span>
+      <span class="ruby-comment cmt"># promising.</span>
+      <span class="ruby-identifier">camera_id</span> =  <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_webcam_id</span>( <span class="ruby-ivar">@current_webcam</span> )
+      <span class="ruby-identifier">affected</span> = <span class="ruby-keyword kw">nil</span>
+      <span class="ruby-keyword kw">case</span> (<span class="ruby-identifier">criteria</span>)
+      <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;variance&quot;</span>
+        <span class="ruby-identifier">affected</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">filter_useful_images_too_low_var</span>(<span class="ruby-identifier">camera_id</span>)
+      <span class="ruby-keyword kw">when</span>  <span class="ruby-value str">&quot;low_max&quot;</span>
+        <span class="ruby-identifier">affected</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">filter_useful_images_too_low_max</span>(<span class="ruby-identifier">camera_id</span>)
+      <span class="ruby-keyword kw">when</span>  <span class="ruby-value str">&quot;hi_min&quot;</span>
+        <span class="ruby-identifier">affected</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">filter_useful_images_too_hi_min</span>(<span class="ruby-identifier">camera_id</span>)
+      <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;all&quot;</span>
+        <span class="ruby-identifier">affected</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">filter_useful_images_too_low_var</span>(<span class="ruby-identifier">camera_id</span>)
+        <span class="ruby-identifier">affected</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">filter_useful_images_too_low_max</span>(<span class="ruby-identifier">camera_id</span>)
+        <span class="ruby-identifier">affected</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">filter_useful_images_too_hi_min</span>(<span class="ruby-identifier">camera_id</span>)
+      <span class="ruby-keyword kw">end</span> <span class="ruby-comment cmt">#end of case</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; #{affected} images were marked 'boring'&quot;</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>gnuplot (Webcam_processor::Webcam_Instructor)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 134</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">gnuplot</span>(<span class="ruby-identifier">query_file</span>,<span class="ruby-identifier">output_file</span>, <span class="ruby-identifier">colx</span>, <span class="ruby-identifier">coly</span>, <span class="ruby-identifier">coms_file</span>) 
+      <span class="ruby-comment cmt"># #not finnished</span>
+      <span class="ruby-identifier">query</span> = <span class="ruby-keyword kw">nil</span>
+      <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">query_file</span>, <span class="ruby-value str">&quot;r&quot;</span>).<span class="ruby-identifier">each</span>  <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">line</span> = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">strip</span>
+        <span class="ruby-identifier">query</span> = <span class="ruby-identifier">query</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot; &quot;</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{query}&quot;</span>
+       
+      <span class="ruby-constant">IO</span>.<span class="ruby-identifier">popen</span>(<span class="ruby-value str">&quot;gnuplot -persist&quot;</span>, <span class="ruby-value str">&quot;w&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span> 
+        <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">coms_file</span>, <span class="ruby-value str">&quot;r&quot;</span>).<span class="ruby-identifier">each</span>  <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+          <span class="ruby-identifier">line</span> = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">strip</span>
+          <span class="ruby-identifier">io</span>.<span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{line}&quot;</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">columns</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+        <span class="ruby-identifier">columns</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">colx</span>)
+        <span class="ruby-identifier">columns</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">coly</span>)
+       
+        <span class="ruby-identifier">outdata</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">generic_query</span>(<span class="ruby-identifier">query</span>,<span class="ruby-identifier">columns</span> ) 
+        <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>( <span class="ruby-identifier">fn</span>,<span class="ruby-value str">&quot;w&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">outfile</span><span class="ruby-operator">|</span>
+        
+        <span class="ruby-keyword kw">end</span> 
+        
+        
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>gnuplot_stats (main.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File main.rb, line 171</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">gnuplot_stats</span>()
+  <span class="ruby-identifier">query_file</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">cam</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">colx</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">coly</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">coms</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">of</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-constant">ARGV</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">arg</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">arg</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--camera=([\ 0-9A-Za-z._]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">cam</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--query_file=([\ 0-9A-Za-z._\/]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">query_file</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--column_x=([\ 0-9]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">colx</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--column_y=([\ 0-9]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">coly</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--gnuplot_commands_file=([\ 0-9A-Za-z._\/]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">coms</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--output_file=([\ 0-9A-Za-z._\/]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">of</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span>(<span class="ruby-identifier">cam</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">query_file</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">colx</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">coly</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">of</span> )
+    <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;gnuplot\n ERROR..... cant parse arguments \&quot;#{cam}\&quot;, \&quot;#{query_file}\&quot;, \&quot;#{colx}\&quot;, \&quot;#{coly}\&quot; , \&quot;#{coms}\&quot; , \&quot;#{of}\&quot; \n\n\n&quot;</span>
+    <span class="ruby-identifier">usage</span>()
+  <span class="ruby-keyword kw">end</span>
+  <span class="ruby-identifier">wc</span> = <span class="ruby-constant">Webcam_processor</span><span class="ruby-operator">::</span><span class="ruby-constant">Webcam_Instructor</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cam</span>,<span class="ruby-value str">&quot;&quot;</span>, <span class="ruby-value str">&quot;&quot;</span>, <span class="ruby-value str">&quot;&quot;</span>)
+  <span class="ruby-identifier">wc</span>.<span class="ruby-identifier">gnuplot</span>(<span class="ruby-identifier">query_file</span>,<span class="ruby-identifier">of</span>, <span class="ruby-identifier">colx</span>, <span class="ruby-identifier">coly</span>, <span class="ruby-identifier">coms</span>) 
+  <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

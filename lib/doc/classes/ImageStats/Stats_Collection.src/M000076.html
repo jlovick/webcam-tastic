@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>load_collection (ImageStats::Stats_Collection)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File new_stats.rb, line 158</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">load_collection</span>(<span class="ruby-identifier">src_file_id</span>, <span class="ruby-identifier">expi</span>, <span class="ruby-identifier">channel</span>)
+      <span class="ruby-identifier">my_stats</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_stats_collection</span>(<span class="ruby-identifier">src_file_id</span>, <span class="ruby-identifier">expi</span>, <span class="ruby-identifier">channel</span>)
+      <span class="ruby-ivar">@stats_collection</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">my_stats</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">my_stats</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+        <span class="ruby-comment cmt"># add in sub tables from my_stats data</span>
+        <span class="ruby-identifier">my_stats</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">stat</span><span class="ruby-operator">|</span>
+          <span class="ruby-identifier">key</span> = <span class="ruby-node">&quot;ImageStats::#{@tables.get_table_name( stat.table_id )}&quot;</span>
+   <span class="ruby-comment cmt">#       puts &quot;making table #{stat.table_id} #{key}&quot;</span>
+          <span class="ruby-ivar">@stats_collection</span>[ <span class="ruby-identifier">key</span> ]  = (<span class="ruby-identifier">give_me_table_object</span>( <span class="ruby-identifier">key</span> )).<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>, <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">table_key</span>, <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">table_id</span>, <span class="ruby-keyword kw">true</span> ) <span class="ruby-comment cmt">#makes a new object from the row in the table</span>
+      <span class="ruby-comment cmt">#    puts &quot; made object &quot;</span>
+      <span class="ruby-comment cmt">#    puts &quot; value is #{@stats_collection[key].get_value} &quot;</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

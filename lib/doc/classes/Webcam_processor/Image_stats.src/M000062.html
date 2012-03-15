@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>image_to_pixel_matrix (Webcam_processor::Image_stats)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 736</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">image_to_pixel_matrix</span>( <span class="ruby-identifier">channel</span>  )
+      <span class="ruby-identifier">dx</span> = <span class="ruby-ivar">@image_proto</span>.<span class="ruby-identifier">tlx</span>.<span class="ruby-identifier">to_i</span>
+      <span class="ruby-identifier">dy</span> = <span class="ruby-ivar">@image_proto</span>.<span class="ruby-identifier">tly</span>.<span class="ruby-identifier">to_i</span>
+      <span class="ruby-identifier">nx</span> = <span class="ruby-ivar">@image_proto</span>.<span class="ruby-identifier">width</span>.<span class="ruby-identifier">to_i</span>
+      <span class="ruby-identifier">ny</span> = <span class="ruby-ivar">@image_proto</span>.<span class="ruby-identifier">height</span>.<span class="ruby-identifier">to_i</span>
+      <span class="ruby-identifier">img</span> = <span class="ruby-ivar">@nimg</span>
+      <span class="ruby-keyword kw">case</span> (<span class="ruby-identifier">channel</span>)
+      <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;red&quot;</span>
+        <span class="ruby-comment cmt">#        img = (@nimg).to_multiarray()</span>
+        <span class="ruby-identifier">res</span> = <span class="ruby-identifier">img</span>.<span class="ruby-identifier">r</span>.<span class="ruby-identifier">to_narray</span>();
+      <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;blue&quot;</span>
+        <span class="ruby-comment cmt">#        img = (@nimg).to_multiarray()</span>
+        <span class="ruby-identifier">res</span> = <span class="ruby-identifier">img</span>.<span class="ruby-identifier">b</span>.<span class="ruby-identifier">to_narray</span>();
+      <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;green&quot;</span>
+        <span class="ruby-comment cmt">#        img = (@nimg).to_multiarray()</span>
+        <span class="ruby-identifier">res</span> = <span class="ruby-identifier">img</span>.<span class="ruby-identifier">g</span>.<span class="ruby-identifier">to_narray</span>();
+      <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;grey&quot;</span>  
+        <span class="ruby-comment cmt">#        img = (@nimg.to_greyf).to_multiarray()</span>
+        <span class="ruby-identifier">res</span> = ((<span class="ruby-identifier">img</span>.<span class="ruby-identifier">r</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">img</span>.<span class="ruby-identifier">b</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">img</span>.<span class="ruby-identifier">g</span>)<span class="ruby-operator">/</span><span class="ruby-value">3</span>).<span class="ruby-identifier">to_narray</span>();
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">ipful</span> = <span class="ruby-identifier">res</span>.<span class="ruby-identifier">to_gm</span>();
+      <span class="ruby-keyword kw">if</span> ((<span class="ruby-identifier">dx</span><span class="ruby-operator">+</span><span class="ruby-identifier">dy</span><span class="ruby-operator">+</span><span class="ruby-identifier">nx</span><span class="ruby-operator">+</span><span class="ruby-identifier">ny</span>) <span class="ruby-operator">!=</span> <span class="ruby-value">0</span>)
+        <span class="ruby-identifier">ipres</span> = <span class="ruby-identifier">ipful</span>.<span class="ruby-identifier">view</span>(<span class="ruby-identifier">dy</span>,<span class="ruby-identifier">dx</span>,<span class="ruby-identifier">ny</span>,<span class="ruby-identifier">nx</span>) 
+        <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">ipres</span>
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">ipful</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

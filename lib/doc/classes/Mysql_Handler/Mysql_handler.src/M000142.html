@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>add_new_stats_entry (Mysql_Handler::Mysql_handler)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File mysql_handler.rb, line 750</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_new_stats_entry</span>(<span class="ruby-identifier">table</span>, <span class="ruby-identifier">results</span>={})
+    <span class="ruby-comment cmt">#  query = &quot;INSERT INTO `webcam_processing`.`#{table}` ( `ID` , #{fields}) VALUES ( NULL &quot; # #{results} ) &quot;</span>
+    <span class="ruby-identifier">keys</span> = <span class="ruby-value str">&quot;&quot;</span>
+    <span class="ruby-identifier">values</span> = <span class="ruby-value str">&quot;&quot;</span>
+    <span class="ruby-identifier">results</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>,<span class="ruby-identifier">value</span><span class="ruby-operator">|</span>
+      <span class="ruby-comment cmt">#     puts &quot; key is #{key} value is #{value}&quot;</span>
+      <span class="ruby-identifier">keys</span> <span class="ruby-operator">+=</span> <span class="ruby-node">&quot;, #{key} &quot;</span>
+      <span class="ruby-identifier">values</span> <span class="ruby-operator">+=</span> <span class="ruby-node">&quot; , #{value} &quot;</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">query</span> = <span class="ruby-node">&quot;INSERT INTO `webcam_processing`.`#{table}` ( `ID`  #{keys}) VALUES ( NULL #{values} ) &quot;</span>
+    <span class="ruby-identifier">res</span> = <span class="ruby-ivar">@dbh</span>.<span class="ruby-identifier">query</span>(<span class="ruby-identifier">query</span>)
+    <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@dbh</span>.<span class="ruby-identifier">insert_id</span>
+  <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">Mysql</span><span class="ruby-operator">::</span><span class="ruby-constant">Error</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error adding stats in to new collection in table -: `#{table}`    : #{query}&quot;</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error code: #{e.errno}&quot;</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error message: #{e.error}&quot;</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error SQLSTATE: #{e.sqlstate}&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value str">&quot;sqlstate&quot;</span>)
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>dump_img (Webcam_processor::Webcam_Instructor)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 306</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">dump_img</span>(<span class="ruby-identifier">img</span>, <span class="ruby-identifier">dest</span>)
+      <span class="ruby-comment cmt"># #puts a copy of the image in the dest directory</span>
+      <span class="ruby-identifier">camera_id</span> =  <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_webcam_id</span>( <span class="ruby-ivar">@current_webcam</span> )
+      <span class="ruby-identifier">file_path</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_camera_image_file</span>(<span class="ruby-identifier">img</span>)
+       
+      <span class="ruby-identifier">end_name</span> = <span class="ruby-identifier">dest</span>.<span class="ruby-identifier">to_str</span> <span class="ruby-operator">+</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">file_path</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">to_str</span>)
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; #{img} #{camera_id} #{file_path[0]} --&gt; #{end_name} &quot;</span>
+      <span class="ruby-constant">File</span>.<span class="ruby-identifier">symlink</span>(<span class="ruby-identifier">file_path</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">to_str</span>, <span class="ruby-identifier">end_name</span>)
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

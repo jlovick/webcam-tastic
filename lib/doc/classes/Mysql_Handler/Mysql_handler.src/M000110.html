@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (Mysql_Handler::Mysql_handler)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File mysql_handler.rb, line 23</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>()
+      <span class="ruby-constant">ObjectSpace</span>.<span class="ruby-identifier">define_finalizer</span>(<span class="ruby-keyword kw">self</span>,<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">method</span>(<span class="ruby-identifier">:finalize</span>).<span class="ruby-identifier">to_proc</span>) <span class="ruby-comment cmt">#add an explicit disconect operation</span>
+      <span class="ruby-comment cmt"># connect to the MySQL server</span>
+      <span class="ruby-identifier">connection_info</span> = <span class="ruby-constant">Mysql_login_info</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-identifier">filename</span> = <span class="ruby-value str">&quot;./mysql_connect.yaml&quot;</span>
+      <span class="ruby-keyword kw">if</span> ( <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>( <span class="ruby-identifier">filename</span>))
+      <span class="ruby-identifier">connection_info</span> = <span class="ruby-constant">YAML</span><span class="ruby-operator">::</span><span class="ruby-identifier">load_file</span>( <span class="ruby-identifier">filename</span> )
+         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; found  mysql connection info&quot;</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; unable to find mysql connection in (mysql_connect.yaml) using defaults&quot;</span>
+      <span class="ruby-identifier">yaml_obj</span> = <span class="ruby-constant">YAML</span><span class="ruby-operator">::</span><span class="ruby-identifier">dump</span>(  <span class="ruby-identifier">connection_info</span> )
+    <span class="ruby-identifier">target_filename</span> = <span class="ruby-value str">&quot;./mysql_connect.yaml&quot;</span>
+    <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">target_filename</span>, <span class="ruby-value str">&quot;w&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">f</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">yaml_obj</span>
+    <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; writen out the default conncetion to a config file for you convience &quot;</span>
+
+      <span class="ruby-keyword kw">end</span>
+    
+      <span class="ruby-ivar">@dbh</span> = <span class="ruby-constant">Mysql</span>.<span class="ruby-identifier">real_connect</span>(<span class="ruby-identifier">connection_info</span>.<span class="ruby-identifier">host</span>, <span class="ruby-identifier">connection_info</span>.<span class="ruby-identifier">username</span>, <span class="ruby-identifier">connection_info</span>.<span class="ruby-identifier">password</span>, <span class="ruby-identifier">connection_info</span>.<span class="ruby-identifier">database</span>)
+      <span class="ruby-comment cmt"># get server version string and display it</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Server version: &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-ivar">@dbh</span>.<span class="ruby-identifier">get_server_info</span>
+    <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">Mysql</span><span class="ruby-operator">::</span><span class="ruby-constant">Error</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error code: #{e.errno}&quot;</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error message: #{e.error}&quot;</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error SQLSTATE: #{e.sqlstate}&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value str">&quot;sqlstate&quot;</span>)
+    <span class="ruby-keyword kw">ensure</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;NOT CONNECTED to database &quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-ivar">@dbh</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

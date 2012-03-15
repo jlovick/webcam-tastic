@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>gnuplot_histogram (Webcam_processor::Webcam_Instructor)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 161</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">gnuplot_histogram</span>(<span class="ruby-identifier">of</span>,<span class="ruby-identifier">exp</span>, <span class="ruby-identifier">channel</span>, <span class="ruby-identifier">st_num</span>,<span class="ruby-identifier">st_file</span>, <span class="ruby-identifier">coms</span>, <span class="ruby-identifier">disp</span>, <span class="ruby-identifier">output</span>) 
+      <span class="ruby-identifier">ids</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-identifier">comms</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-identifier">hbrr</span> = <span class="ruby-keyword kw">nil</span>
+      <span class="ruby-identifier">pio</span> = <span class="ruby-keyword kw">nil</span>
+      <span class="ruby-identifier">title</span> = <span class="ruby-keyword kw">nil</span>
+      <span class="ruby-identifier">chlist</span> = <span class="ruby-constant">ImageStats</span><span class="ruby-operator">::</span><span class="ruby-constant">Channel_Table_List</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>)
+      <span class="ruby-identifier">exp_table</span> = <span class="ruby-constant">ImageStats</span><span class="ruby-operator">::</span><span class="ruby-constant">Experiment_Table_List</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>)
+      <span class="ruby-identifier">exp_id</span>=<span class="ruby-identifier">exp_table</span>.<span class="ruby-identifier">get_experiment_id</span>(<span class="ruby-identifier">exp</span>)
+      <span class="ruby-identifier">channel_id</span> = <span class="ruby-identifier">chlist</span>.<span class="ruby-identifier">get_channel_id</span>(<span class="ruby-identifier">channel</span>)
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;experiment #{exp} is #{exp_id} \n channel #{channel} is #{channel_id}&quot;</span>
+      <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">st_file</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;loading in file #{st_file} &quot;</span>
+        <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">st_file</span>, <span class="ruby-value str">&quot;r&quot;</span>).<span class="ruby-identifier">each</span>  <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+          <span class="ruby-identifier">line</span> = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">strip</span>
+          <span class="ruby-comment cmt">#      puts &quot; line is #{line} #{line.to_s.slice(0,1)}&quot;</span>
+          <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">line</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">slice</span>(<span class="ruby-value">0</span>,<span class="ruby-value">1</span>) <span class="ruby-operator">!=</span> <span class="ruby-value str">&quot;#&quot;</span>)
+            <span class="ruby-comment cmt">#   puts &quot; ahhh&quot;</span>
+            <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">line</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">slice</span>(<span class="ruby-value">0</span>,<span class="ruby-value">1</span>) <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;!&quot;</span>)
+              <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; got a gnuplot command &quot;</span>
+              <span class="ruby-identifier">line</span>.<span class="ruby-identifier">slice</span>(<span class="ruby-value">1</span><span class="ruby-operator">...</span><span class="ruby-identifier">line</span>.<span class="ruby-identifier">length</span>).<span class="ruby-identifier">scan</span>(<span class="ruby-regexp re">/(\w*) (.*)/</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">file</span>, <span class="ruby-identifier">res</span><span class="ruby-operator">|</span> 
+                <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; setting #{file}  to #{res} &quot;</span>
+                <span class="ruby-identifier">comms</span>[<span class="ruby-identifier">file</span>] = <span class="ruby-identifier">res</span>
+              }
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; got an id &quot;</span>
+              <span class="ruby-identifier">line</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-regexp re">/(\d*\ *)(.*)/</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">file</span>, <span class="ruby-identifier">res</span><span class="ruby-operator">|</span> 
+                <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">file</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+                  <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">res</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>)
+                    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; file is #{file}&quot;</span>
+                    <span class="ruby-identifier">res</span> = <span class="ruby-identifier">file</span>
+                  <span class="ruby-keyword kw">end</span>
+                  <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; adding in  id=#{file} as #{res} &quot;</span>
+                  <span class="ruby-identifier">ids</span>[<span class="ruby-identifier">res</span>] = <span class="ruby-identifier">file</span>
+                <span class="ruby-keyword kw">end</span>
+              }
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; skipped commented line #{line}&quot;</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">else</span>
+         
+        <span class="ruby-identifier">st_num</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-regexp re">/(\d*\ *)(.*)/</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">file</span>, <span class="ruby-identifier">res</span><span class="ruby-operator">|</span> 
+          <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">file</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+            <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">res</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>)
+              <span class="ruby-identifier">res</span> = <span class="ruby-identifier">file</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; adding in  id=#{file} as #{res} &quot;</span>
+            <span class="ruby-identifier">ids</span>[<span class="ruby-identifier">res</span>] = <span class="ruby-identifier">file</span>
+          <span class="ruby-keyword kw">end</span>
+        }
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; finnished loading in id's to process &quot;</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; set output base to #{output}&quot;</span>
+      <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">disp</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>)
+        <span class="ruby-identifier">disp</span> = <span class="ruby-value str">&quot;x11&quot;</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; set display to default (x11)&quot;</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; gnuplot terminal set to #{disp}&quot;</span>
+       
+      <span class="ruby-comment cmt">#  GSL::Vector.graph([hbrr], &quot;-T svg -C -g 1 -S 1 &gt; &quot;+of+&quot;_&quot;+id.to_s+&quot;.svg&quot;)</span>
+      <span class="ruby-identifier">ids</span>.<span class="ruby-identifier">keys</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">id</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">hbrr</span> = <span class="ruby-keyword kw">nil</span>
+        <span class="ruby-identifier">pio</span> = <span class="ruby-keyword kw">nil</span>
+        <span class="ruby-identifier">file_path</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_camera_image_file</span>(<span class="ruby-identifier">id</span>)
+       
+        <span class="ruby-identifier">end_name</span> =  <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">file_path</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">to_str</span>,<span class="ruby-value str">&quot;.jpeg&quot;</span>)
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; processing      #{id} #{end_name}&quot;</span>
+        <span class="ruby-constant">IO</span>.<span class="ruby-identifier">popen</span>(<span class="ruby-value str">&quot;gnuplot -persist&quot;</span>, <span class="ruby-value str">&quot;w&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span>
+          <span class="ruby-identifier">io</span>.<span class="ruby-identifier">print</span>(<span class="ruby-node">&quot;set terminal #{disp} \n&quot;</span>)
+    
+       
+          <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">coms</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span> )
+            <span class="ruby-identifier">io</span>.<span class="ruby-identifier">print</span>(<span class="ruby-node">&quot;#{coms} \n&quot;</span>)
+            <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{coms}&quot;</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">comms</span>.<span class="ruby-identifier">keys</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">idc</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">io</span>.<span class="ruby-identifier">print</span>(<span class="ruby-node">&quot;set #{idc}  #{comms[idc]}\n&quot;</span>)
+            <span class="ruby-identifier">puts</span>  <span class="ruby-node">&quot;set #{idc}  \'#{comms[idc]}\'\n&quot;</span>
+          <span class="ruby-keyword kw">end</span>
+        
+          <span class="ruby-identifier">io</span>.<span class="ruby-identifier">print</span>(<span class="ruby-value str">&quot;set xrange  [0:255] \n&quot;</span>)
+       
+     
+
+          <span class="ruby-identifier">title</span> = <span class="ruby-identifier">id</span>
+          <span class="ruby-identifier">io</span>.<span class="ruby-identifier">print</span>(<span class="ruby-node">&quot; set title 'Histogram of DN occurance  #{title}   #{exp}  #{channel}' \n&quot;</span>)
+        
+          <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">output</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+            <span class="ruby-identifier">io</span>.<span class="ruby-identifier">print</span>(<span class="ruby-node">&quot;set output \&quot;#{output}/#{end_name}-hist-#{id}-exp-#{exp}-channel-#{channel}.#{disp}\&quot; \n&quot;</span>)
+            <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;set output \&quot;#{output}/#{end_name}-hist-#{id}-exp-#{exp}-channel-#{channel}.#{disp}\&quot; \n&quot;</span>
+          <span class="ruby-keyword kw">end</span>
+        
+          <span class="ruby-identifier">fn</span>= <span class="ruby-node">&quot;#{of}/#{end_name}_#{ids[id]}_exp-#{exp}-channel-#{channel}.txt&quot;</span>
+          <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; Processing \&quot;#{id}\&quot; as src_file_id  #{ids[id]} with datafile #{fn} \n&quot;</span>
+          <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>( <span class="ruby-identifier">fn</span>,<span class="ruby-value str">&quot;w&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">outfile</span><span class="ruby-operator">|</span>
+            <span class="ruby-keyword kw">if</span> ((<span class="ruby-identifier">ids</span>[<span class="ruby-identifier">id</span>].<span class="ruby-identifier">length</span>)<span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+              <span class="ruby-identifier">my_hist</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_histogram</span>(<span class="ruby-identifier">ids</span>[<span class="ruby-identifier">id</span>],<span class="ruby-identifier">exp_id</span>, <span class="ruby-identifier">channel_id</span>)
+              <span class="ruby-comment cmt"># puts &quot;#{my_hist.length}\n #{my_hist}&quot;</span>
+              <span class="ruby-identifier">hbrr</span> = (<span class="ruby-constant">Marshal</span>.<span class="ruby-identifier">load</span>(<span class="ruby-identifier">my_hist</span>.<span class="ruby-identifier">strip</span>)).<span class="ruby-identifier">to_gv</span>
+              <span class="ruby-identifier">y</span> = <span class="ruby-value">0</span>
+              <span class="ruby-identifier">hbrr</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">it</span><span class="ruby-operator">|</span>
+                <span class="ruby-identifier">outfile</span>.<span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; #{y}, #{it} &quot;</span>
+                <span class="ruby-identifier">y</span>=<span class="ruby-identifier">y</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>
+              <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-comment cmt">#</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">pio</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span> 
+            <span class="ruby-identifier">pio</span> = <span class="ruby-identifier">pio</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot; , &quot;</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-comment cmt"># pio = pio.to_s + &quot;'&quot;+fn.to_s + &quot;' using 1:2 with lines title</span>
+          <span class="ruby-comment cmt"># \'&quot;+id+&quot;\' &quot;</span>
+          <span class="ruby-identifier">pio</span> = <span class="ruby-node">&quot;#{pio} '#{fn}' using 1:2 with lines title '#{end_name}-#{id}' &quot;</span>
+          <span class="ruby-comment cmt"># puts &quot; #{pio}&quot;</span>
+          <span class="ruby-identifier">io</span>.<span class="ruby-identifier">print</span>(<span class="ruby-node">&quot;plot #{pio} \n&quot;</span>)
+          <span class="ruby-identifier">io</span>.<span class="ruby-identifier">flush</span>
+          <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; flushed gnuplot&quot;</span>
+        <span class="ruby-keyword kw">end</span>
+
+        
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

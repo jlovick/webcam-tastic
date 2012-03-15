@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>add_webcam_image (Mysql_Handler::Mysql_handler)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File mysql_handler.rb, line 112</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_webcam_image</span>( <span class="ruby-identifier">camera_id</span>, <span class="ruby-identifier">filename</span>, <span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">image_date</span>)
+      <span class="ruby-comment cmt">#     INSERT INTO `webcam_processing`.`src_files_table` (</span>
+      <span class="ruby-comment cmt"># `id` ,</span>
+      <span class="ruby-comment cmt"># `src_camera` ,</span>
+      <span class="ruby-comment cmt"># `image_date` ,</span>
+      <span class="ruby-comment cmt"># `filename` ,</span>
+      <span class="ruby-comment cmt"># remote_url,</span>
+      <span class="ruby-comment cmt"># `corrupt`</span>
+      <span class="ruby-comment cmt">#)</span>
+      <span class="ruby-comment cmt">#VALUES (</span>
+      <span class="ruby-comment cmt">#NULL , '1', '2008-03-20 11:01:52', 'test', '0'</span>
+      <span class="ruby-comment cmt">#);</span>
+      <span class="ruby-identifier">query</span> = <span class="ruby-value str">&quot;INSERT INTO `src_files_table` ( `id` ,
+       `src_camera` ,
+       `image_date` ,
+       `filename` ,
+       `remote_url`,
+       `corrupt` ) VALUES ( NULL, &quot;</span>
+      
+      <span class="ruby-identifier">query</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;'&quot;</span><span class="ruby-operator">+</span><span class="ruby-identifier">camera_id</span><span class="ruby-operator">+</span><span class="ruby-value str">&quot;','&quot;</span><span class="ruby-operator">+</span><span class="ruby-identifier">image_date</span><span class="ruby-operator">+</span><span class="ruby-value str">&quot;','&quot;</span> <span class="ruby-operator">+</span><span class="ruby-identifier">filename</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;', '&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">remote_url</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;' , '');&quot;</span>
+      <span class="ruby-identifier">res</span> = <span class="ruby-ivar">@dbh</span>.<span class="ruby-identifier">query</span>(<span class="ruby-identifier">query</span>)
+    <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">Mysql</span><span class="ruby-operator">::</span><span class="ruby-constant">Error</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+      <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">e</span>.<span class="ruby-identifier">errno</span> <span class="ruby-operator">==</span> <span class="ruby-value">1062</span>)
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error message: #{e.error}&quot;</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error SQLSTATE: #{e.sqlstate}&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value str">&quot;sqlstate&quot;</span>)
+        <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;found entry with likely wrong path, trying to fix&quot;</span>
+        <span class="ruby-identifier">update_webcam_image</span>( <span class="ruby-identifier">camera_id</span>, <span class="ruby-identifier">filename</span>, <span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">image_date</span>)
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error adding webcam image to table : #{query}&quot;</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error code: #{e.errno}&quot;</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error message: #{e.error}&quot;</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error SQLSTATE: #{e.sqlstate}&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value str">&quot;sqlstate&quot;</span>)
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

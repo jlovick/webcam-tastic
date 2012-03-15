@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>update_webcam_image (Mysql_Handler::Mysql_handler)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File mysql_handler.rb, line 147</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">update_webcam_image</span>( <span class="ruby-identifier">camera_id</span>, <span class="ruby-identifier">filename</span>, <span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">image_date</span>)
+      <span class="ruby-comment cmt"># UPDATE `webcam_processing`.`src_files_table` SET `filename` = '/export/stripe/St_helens_webcam/2008/Mar/2008-Wed-Mar-19-18:45:02-Classic.jpeg' WHERE `src_files_table`.`id` =15517 LIMIT 1 ;</span>
+      <span class="ruby-identifier">qr</span> = <span class="ruby-value str">&quot;SELECT id from `src_files_table` WHERE `image_date` ='&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">image_date</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;' AND `src_camera` = &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">camera_id</span> <span class="ruby-operator">+</span><span class="ruby-value str">&quot; ;&quot;</span>
+      <span class="ruby-identifier">resa</span> = <span class="ruby-ivar">@dbh</span>.<span class="ruby-identifier">query</span>(<span class="ruby-identifier">qr</span>)
+      <span class="ruby-identifier">row</span> = <span class="ruby-identifier">resa</span>.<span class="ruby-identifier">fetch_row</span>
+      <span class="ruby-identifier">id</span> = <span class="ruby-identifier">row</span>[<span class="ruby-value">0</span>]
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;got id of row #{id}&quot;</span>
+      <span class="ruby-identifier">query</span> = <span class="ruby-value str">&quot;UPDATE `webcam_processing`.`src_files_table` SET `filename` = '&quot;</span><span class="ruby-operator">+</span><span class="ruby-identifier">filename</span><span class="ruby-operator">+</span> <span class="ruby-value str">&quot;' WHERE `src_files_table`.`id` = '&quot;</span><span class="ruby-operator">+</span><span class="ruby-identifier">id</span><span class="ruby-operator">+</span><span class="ruby-value str">&quot;' LIMIT 1 ;&quot;</span>
+
+      <span class="ruby-identifier">resb</span> = <span class="ruby-ivar">@dbh</span>.<span class="ruby-identifier">query</span>(<span class="ruby-identifier">query</span>)
+      <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; updated record OK...................&quot;</span>
+      
+    <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">Mysql</span><span class="ruby-operator">::</span><span class="ruby-constant">Error</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error updating webcam image to table : #{query}&quot;</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error code: #{e.errno}&quot;</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error message: #{e.error}&quot;</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Error SQLSTATE: #{e.sqlstate}&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value str">&quot;sqlstate&quot;</span>)
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>get_base_url (Mysql_Handler::Mysql_handler)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File mysql_handler.rb, line 181</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get_base_url</span>(<span class="ruby-identifier">camera</span>)
+      <span class="ruby-identifier">query</span> = <span class="ruby-value str">&quot; SELECT `camera_url`
+                      FROM `src_camera_table`
+                      WHERE `id` =  '&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">camera</span>.<span class="ruby-identifier">to_s</span><span class="ruby-operator">+</span><span class="ruby-value str">&quot;'&quot;</span>
+      <span class="ruby-identifier">res</span> = <span class="ruby-ivar">@dbh</span>.<span class="ruby-identifier">query</span>(<span class="ruby-identifier">query</span>)
+      <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">res</span>.<span class="ruby-identifier">num_rows</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+        <span class="ruby-identifier">row</span> = <span class="ruby-identifier">res</span>.<span class="ruby-identifier">fetch_row</span>
+        <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">row</span>[<span class="ruby-value">0</span>]
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;unable to find camera URL, \n query was -: #{query}&quot;</span> 
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

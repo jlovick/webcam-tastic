@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>add_images (main.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File main.rb, line 116</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_images</span>()
+  <span class="ruby-comment cmt">#import_webcams(msh) </span>
+  <span class="ruby-comment cmt">#add_in_avo_images(msh,&quot;Augustine Lagoon&quot;, &quot;/export/elephant/webcam/AVO-webcams/Augustine/final_file_list_auglagoon&quot;)</span>
+  <span class="ruby-identifier">cam</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">pat</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">id</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">ext</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-constant">ARGV</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">arg</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">arg</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--camera=([\ 0-9A-Za-z._]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">cam</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--path=((.*)+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">pat</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--identifier=((.*)+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">id</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--ext=([\ 0-9A-Za-z._]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">ext</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span>(<span class="ruby-identifier">cam</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">pat</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">id</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">ext</span>)
+    <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;add_images\n ERROR..... cant parse arguments \&quot;#{cam}\&quot;, \&quot;#{pat}\&quot;, \&quot;#{id}\&quot;, \&quot;#{ext}\&quot; \n\n\n&quot;</span>
+    <span class="ruby-identifier">usage</span>()
+  <span class="ruby-keyword kw">end</span>
+  <span class="ruby-identifier">wc</span> = <span class="ruby-constant">Webcam_processor</span><span class="ruby-operator">::</span><span class="ruby-constant">Webcam_Instructor</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cam</span>,<span class="ruby-value str">&quot;&quot;</span>,<span class="ruby-value str">&quot;&quot;</span>,<span class="ruby-value str">&quot;&quot;</span>)
+  <span class="ruby-identifier">wc</span>.<span class="ruby-identifier">import_webcam</span>(<span class="ruby-identifier">pat</span>,<span class="ruby-identifier">id</span>,<span class="ruby-identifier">ext</span>)
+  <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

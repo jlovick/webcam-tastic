@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>get_image_from_url (Webcam_processor::Process_webcam)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 1058</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get_image_from_url</span>(<span class="ruby-identifier">thisimage</span>, <span class="ruby-identifier">myuser</span>, <span class="ruby-identifier">mypassword</span>)
+      <span class="ruby-comment cmt"># #need to this 4 step program to properly flush out the buffer before</span>
+      <span class="ruby-comment cmt"># reading it in the convert command</span>
+      <span class="ruby-identifier">f</span> =  <span class="ruby-identifier">open</span>(<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span>,<span class="ruby-value str">&quot;w&quot;</span>)
+    
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;getting #{thisimage.url} as  #{thisimage.filename} \n using authentication&quot;</span>
+      <span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">open</span>(<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">url</span>.<span class="ruby-identifier">to_s</span> ,
+          <span class="ruby-identifier">:http_basic_authentication=</span><span class="ruby-operator">&gt;</span>[<span class="ruby-identifier">myuser</span>, <span class="ruby-identifier">mypassword</span>]  ).<span class="ruby-identifier">read</span>)
+      <span class="ruby-identifier">f</span>.<span class="ruby-identifier">flush</span>
+      <span class="ruby-identifier">f</span>.<span class="ruby-identifier">close</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

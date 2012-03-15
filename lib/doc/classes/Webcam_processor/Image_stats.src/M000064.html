@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>load_an_image (Webcam_processor::Image_stats)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 798</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">load_an_image</span>(<span class="ruby-identifier">image_id</span>, <span class="ruby-identifier">my_img</span>,  <span class="ruby-identifier">operation</span>, <span class="ruby-identifier">channel</span>, <span class="ruby-identifier">experiment</span> )
+      <span class="ruby-ivar">@nimg</span> = <span class="ruby-identifier">my_img</span>
+        <span class="ruby-ivar">@@gc_count</span> = <span class="ruby-ivar">@@gc_count</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>
+      <span class="ruby-identifier">pixels</span> = <span class="ruby-keyword kw">nil</span>
+      <span class="ruby-identifier">scb</span> = <span class="ruby-constant">ImageStats</span><span class="ruby-operator">::</span><span class="ruby-constant">Stats_Collection</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>, <span class="ruby-identifier">image_id</span>, (<span class="ruby-identifier">experiment</span>), <span class="ruby-ivar">@@chl_list</span>.<span class="ruby-identifier">get_channel_id</span>(<span class="ruby-identifier">channel</span>) )
+      
+      <span class="ruby-keyword kw">case</span> (<span class="ruby-identifier">operation</span>)
+      <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;channels&quot;</span>
+        <span class="ruby-identifier">pixels</span> = <span class="ruby-identifier">image_to_pixel_matrix</span>( <span class="ruby-identifier">channel</span>  )
+      <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;st_helens_luminesce_enhance&quot;</span>
+        <span class="ruby-identifier">pixels</span> = <span class="ruby-identifier">st_helens_lumninesce_enhance</span>(<span class="ruby-identifier">image_id</span>,<span class="ruby-identifier">experiment</span>)
+        <span class="ruby-identifier">outimg</span> = (<span class="ruby-identifier">pixels</span>.<span class="ruby-identifier">to_na</span>).<span class="ruby-identifier">to_hornetseye</span>()
+        <span class="ruby-identifier">fname</span> = <span class="ruby-node">&quot;/home/jlovick/tmp/images/#{experiment}-#{image_id}.jpeg&quot;</span>
+        <span class="ruby-identifier">outimg</span>.<span class="ruby-identifier">to_grey8</span>.<span class="ruby-identifier">save</span>( <span class="ruby-identifier">fname</span> );
+        <span class="ruby-identifier">outimg</span> = <span class="ruby-keyword kw">nil</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; written #{fname}&quot;</span>
+        <span class="ruby-identifier">f</span> = <span class="ruby-identifier">open</span>(<span class="ruby-identifier">fname</span>,<span class="ruby-value str">'r'</span>)
+        <span class="ruby-identifier">tbl_img</span> = <span class="ruby-identifier">f</span>.<span class="ruby-identifier">read</span>
+        <span class="ruby-identifier">f</span>.<span class="ruby-identifier">close</span>
+        <span class="ruby-comment cmt"># #dp = Marshal.dump( tbl_img.to_a )</span>
+        <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">add_table</span>(<span class="ruby-ivar">@@tbl_list</span>.<span class="ruby-identifier">get_table_id</span>(<span class="ruby-value str">&quot;Image_Data_Table&quot;</span>), <span class="ruby-identifier">:image_data</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">tbl_img</span>, <span class="ruby-identifier">:image_data_type</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">&quot;jpg&quot;</span> )
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; stored #{fname} as a binary blob in the \&quot;Image_Data_Table\&quot; table in the DB&quot;</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-ivar">@nimg</span> = <span class="ruby-keyword kw">nil</span>
+    
+      <span class="ruby-comment cmt">#    pna = nil</span>
+      <span class="ruby-comment cmt">#    gma = nil</span>
+      <span class="ruby-comment cmt">#    hni = nil</span>
+    
+      <span class="ruby-comment cmt">#    pna = pixels.to_narray</span>
+      <span class="ruby-comment cmt">#    gma = pna.to_multiarray</span>
+      <span class="ruby-comment cmt">#    hni = gma.to_hornetseye</span>
+    
+      <span class="ruby-comment cmt">#  output = OpenGLOutput.new</span>
+      <span class="ruby-comment cmt">#  display = X11Display.new</span>
+      <span class="ruby-comment cmt">#  window = X11Window.new( display, output, image_proto.width  ,image_proto.height  )</span>
+      <span class="ruby-comment cmt">#  window.title = &quot;XVideo display&quot;</span>
+      <span class="ruby-comment cmt">#  window.show</span>
+      <span class="ruby-comment cmt">#  output.write( hni )</span>
+      <span class="ruby-comment cmt">#  display.eventLoop</span>
+
+      <span class="ruby-identifier">mean</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Stats</span><span class="ruby-operator">::</span><span class="ruby-identifier">mean</span>(<span class="ruby-identifier">pixels</span>,<span class="ruby-value">1</span>)
+      <span class="ruby-identifier">max</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Stats</span><span class="ruby-operator">::</span><span class="ruby-identifier">max</span>(<span class="ruby-identifier">pixels</span>,<span class="ruby-value">1</span>)
+      <span class="ruby-identifier">min</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Stats</span><span class="ruby-operator">::</span><span class="ruby-identifier">min</span>(<span class="ruby-identifier">pixels</span>,<span class="ruby-value">1</span>)
+      <span class="ruby-identifier">variance</span> =  <span class="ruby-constant">Math</span><span class="ruby-operator">::</span><span class="ruby-identifier">sqrt</span>( <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Stats</span><span class="ruby-operator">::</span><span class="ruby-identifier">variance</span>(<span class="ruby-identifier">pixels</span>,<span class="ruby-value">1</span>) )
+      <span class="ruby-comment cmt">#  puts &quot; mean is #{mean}, max #{max}, min #{min}, #{variance}&quot;</span>
+      <span class="ruby-identifier">h</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Histogram</span>.<span class="ruby-identifier">alloc</span>(<span class="ruby-value">256</span>,<span class="ruby-value">0</span>,<span class="ruby-value">255</span>)
+      (<span class="ruby-identifier">pixels</span>.<span class="ruby-identifier">to_v</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">h</span>.<span class="ruby-identifier">increment</span>(<span class="ruby-identifier">x</span>)
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-comment cmt">#  h.graph(&quot;-T X -C &quot;) # we dont need to see the raw histogram here</span>
+      <span class="ruby-identifier">harr</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span>.<span class="ruby-identifier">alloc</span>(<span class="ruby-value">256</span>)
+      <span class="ruby-identifier">hpos</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span>.<span class="ruby-identifier">alloc</span>(<span class="ruby-value">256</span>)
+      <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">day</span> <span class="ruby-keyword kw">in</span> (<span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-value">255</span>)
+        <span class="ruby-identifier">harr</span>[<span class="ruby-identifier">day</span>] = <span class="ruby-identifier">h</span>.<span class="ruby-identifier">get</span>(<span class="ruby-identifier">day</span>)
+        <span class="ruby-identifier">hpos</span>[<span class="ruby-identifier">day</span>] = <span class="ruby-identifier">day</span>;
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-comment cmt"># need to find right fitting solution</span>
+      <span class="ruby-comment cmt">#   coef, err, chisq = GSL::Fit::mul(hpos, harr)</span>
+      <span class="ruby-comment cmt">#</span>
+      <span class="ruby-comment cmt"># puts &quot;coef #{coef} err #{err} chisq #{chisq}&quot; dump coef coef, cov,</span>
+      <span class="ruby-comment cmt"># chisq, status = GSL::Poly::fit(hpos, harr, 32) coef, cov, chisq, status</span>
+      <span class="ruby-comment cmt"># = Poly.fit(hpos, harr, 3)</span>
+      <span class="ruby-comment cmt">#  puts &quot;coef #{coef} err #{cov} chisq #{chisq}&quot;</span>
+ 
+      <span class="ruby-comment cmt"># none of these fittings worked very well</span>
+      <span class="ruby-comment cmt">#</span>
+      <span class="ruby-comment cmt">#  x2 = GSL::Vector.linspace(1, 256, 255)</span>
+      <span class="ruby-comment cmt">#  GSL::Vector.graph([hpos, harr], &quot;-C -g 1 -S 1&quot;)</span>
+
+      <span class="ruby-identifier">dp</span> = <span class="ruby-constant">Marshal</span>.<span class="ruby-identifier">dump</span>( <span class="ruby-identifier">harr</span>.<span class="ruby-identifier">to_a</span> )
+      <span class="ruby-comment cmt">#  puts &quot; dt = #{dp}&quot;</span>
+      <span class="ruby-comment cmt">#  hbrr = (Marshal.load(dp)).to_gv</span>
+      <span class="ruby-identifier">region</span> = <span class="ruby-ivar">@image_proto</span>.<span class="ruby-identifier">tlx</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-operator">+</span> <span class="ruby-value str">'x'</span> <span class="ruby-operator">+</span> <span class="ruby-ivar">@image_proto</span>.<span class="ruby-identifier">tly</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-operator">+</span> <span class="ruby-value str">'+'</span><span class="ruby-operator">+</span><span class="ruby-ivar">@image_proto</span>.<span class="ruby-identifier">height</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-operator">+</span> <span class="ruby-value str">','</span><span class="ruby-operator">+</span> <span class="ruby-ivar">@image_proto</span>.<span class="ruby-identifier">width</span>.<span class="ruby-identifier">to_s</span>
+     
+      <span class="ruby-comment cmt"># this was the old style store stats</span>
+      <span class="ruby-comment cmt">#   @@msh.store_statistics( image_id, experiment, region, mean, max, min, variance, channel, dp)</span>
+      <span class="ruby-comment cmt">#    exp_list = ImageStats::Experiment_Table_List.new(@@msh)</span>
+
+         
+      <span class="ruby-comment cmt">#    scb = ImageStats::Stats_Collection.new(@@msh, image_id, (experiment), @@chl_list.get_channel_id(channel) )</span>
+      <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">add_table</span>(<span class="ruby-ivar">@@tbl_list</span>.<span class="ruby-identifier">get_table_id</span>(<span class="ruby-value str">&quot;Mean_Table&quot;</span>), <span class="ruby-identifier">:mean</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">mean</span>)
+      <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">add_table</span>(<span class="ruby-ivar">@@tbl_list</span>.<span class="ruby-identifier">get_table_id</span>(<span class="ruby-value str">&quot;Max_Table&quot;</span>), <span class="ruby-identifier">:max</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">max</span>)
+      <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">add_table</span>(<span class="ruby-ivar">@@tbl_list</span>.<span class="ruby-identifier">get_table_id</span>(<span class="ruby-value str">&quot;Min_Table&quot;</span>), <span class="ruby-identifier">:min</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">min</span>)
+      <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">add_table</span>(<span class="ruby-ivar">@@tbl_list</span>.<span class="ruby-identifier">get_table_id</span>(<span class="ruby-value str">&quot;Variance_Table&quot;</span>), <span class="ruby-identifier">:variance</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">variance</span>)
+      <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">add_table</span>(<span class="ruby-ivar">@@tbl_list</span>.<span class="ruby-identifier">get_table_id</span>(<span class="ruby-value str">&quot;Histogram_Table&quot;</span>), <span class="ruby-identifier">:histogram</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">dp</span>)
+      <span class="ruby-identifier">scb</span> = <span class="ruby-keyword kw">nil</span>
+      <span class="ruby-comment cmt">#  hbrr.print</span>
+      <span class="ruby-comment cmt"># #output = OpenGLOutput.new #display = X11Display.new #window =</span>
+      <span class="ruby-comment cmt"># X11Window.new( display, output, nimg.display ) #window.title = &quot;XVideo</span>
+      <span class="ruby-comment cmt"># display&quot; #window.show #output.write( nimg ) #display.eventLoop</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{@@gc_count},  #{image_id}, channel #{channel} done&quot;</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

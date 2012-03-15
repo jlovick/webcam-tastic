@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>useful_images (main.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File main.rb, line 291</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">useful_images</span>()
+  <span class="ruby-identifier">cam</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">crit</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-constant">ARGV</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">arg</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">arg</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--camera=([\ 0-9A-Za-z._]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">cam</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--criteria=([\ 0-9A-Za-z._\/]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">crit</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+   
+  <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span>( <span class="ruby-identifier">cam</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">crit</span> )
+    <span class="ruby-identifier">print</span> <span class="ruby-node">&quot; cant understand options.... #{cam} #{crit}&quot;</span>
+    <span class="ruby-identifier">usage</span>()
+  <span class="ruby-keyword kw">end</span>
+   
+  <span class="ruby-identifier">wc</span> = <span class="ruby-constant">Webcam_processor</span><span class="ruby-operator">::</span><span class="ruby-constant">Webcam_Instructor</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cam</span>,<span class="ruby-value str">&quot;&quot;</span>, <span class="ruby-value str">&quot;&quot;</span>, <span class="ruby-value str">&quot;&quot;</span>)
+  <span class="ruby-identifier">wc</span>.<span class="ruby-identifier">find_useful</span>(<span class="ruby-identifier">crit</span>)  
+  <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

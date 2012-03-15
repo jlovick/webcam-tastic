@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>get_image_date (Webcam_processor::Process_webcam)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 986</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get_image_date</span>( <span class="ruby-identifier">fn</span>,<span class="ruby-identifier">ext</span> )
+      <span class="ruby-identifier">id</span> = <span class="ruby-identifier">read_st_hel_date</span>( <span class="ruby-identifier">fn</span> )
+      <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">id</span> )
+        <span class="ruby-ivar">@image_date</span> = <span class="ruby-identifier">id</span>
+        <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">id</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-ivar">@months</span> = [ <span class="ruby-value str">&quot;Jan&quot;</span>, <span class="ruby-value str">&quot;Feb&quot;</span> , <span class="ruby-value str">&quot;Mar&quot;</span> , <span class="ruby-value str">&quot;Apr&quot;</span> , <span class="ruby-value str">&quot;May&quot;</span> , <span class="ruby-value str">&quot;Jun&quot;</span> , <span class="ruby-value str">&quot;Jul&quot;</span> , <span class="ruby-value str">&quot;Aug&quot;</span>, <span class="ruby-value str">&quot;Sep&quot;</span>, <span class="ruby-value str">&quot;Oct&quot;</span> , <span class="ruby-value str">&quot;Nov&quot;</span>, <span class="ruby-value str">&quot;Dec&quot;</span> ]
+      <span class="ruby-ivar">@days</span> = [<span class="ruby-value str">&quot;Mon&quot;</span>,<span class="ruby-value str">&quot;Tue&quot;</span>,<span class="ruby-value str">&quot;Wed&quot;</span>,<span class="ruby-value str">&quot;Thu&quot;</span>,<span class="ruby-value str">&quot;Fri&quot;</span>,<span class="ruby-value str">&quot;Sat&quot;</span>,<span class="ruby-value str">&quot;Sun&quot;</span>]
+      <span class="ruby-identifier">parse_fn</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">fn</span>, <span class="ruby-identifier">ext</span>)
+      <span class="ruby-identifier">fn_parts</span> = <span class="ruby-identifier">parse_fn</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/-/</span>)
+      <span class="ruby-identifier">tn_parts</span> = <span class="ruby-identifier">fn_parts</span>[<span class="ruby-value">4</span>].<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/:/</span>)
+      <span class="ruby-identifier">mon</span> = <span class="ruby-ivar">@months</span>.<span class="ruby-identifier">index</span>( <span class="ruby-identifier">fn_parts</span>[<span class="ruby-value">2</span>] ) <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+      <span class="ruby-ivar">@image_date</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">utc</span>( <span class="ruby-identifier">fn_parts</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">to_i</span> , <span class="ruby-identifier">mon</span>.<span class="ruby-identifier">to_i</span>, <span class="ruby-identifier">fn_parts</span>[<span class="ruby-value">3</span>].<span class="ruby-identifier">to_i</span>, <span class="ruby-identifier">tn_parts</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">to_i</span>, <span class="ruby-identifier">tn_parts</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">to_i</span>, <span class="ruby-identifier">tn_parts</span>[<span class="ruby-value">2</span>].<span class="ruby-identifier">to_i</span>)
+      <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@image_date</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

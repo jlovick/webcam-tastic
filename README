@@ -1,0 +1,175 @@
+== Webcam_tastic
+
+You should document your project here.
+
+== NOTES
+
+SELECT  sub_ft.id FROM `statistics` ft 
+           join ( 
+           select count(*) as num, `id`
+           from `src_files_table` WHERE src_camera = 5
+           group by `id`
+           ) sub_ft
+           on 
+           sub_ft.id = ft.Camera_ID
+           where
+           sub_ft.num = 1 
+
+another useful query
+
+seems quite fast, in limited testing
+
+ SELECT `Mean`
+FROM `statistics` , `src_files_table`
+WHERE (
+`statistics`.`Camera_ID` = `src_files_table`.`id`
+)
+AND (
+`src_files_table`.`src_camera` =5
+)
+
+
+yep pretty quick
+
+SELECT `src_camera`, `Mean`,`Max`, `Min`, `image_date` 
+FROM `statistics`, `src_files_table` WHERE
+ (`statistics`.`Camera_ID` = `src_files_table`.`id`)
+ AND (`src_files_table`.`src_camera` = 2) 
+AND ( `statistics`.`Channel` = 'grey' )
+
+
+
+webcam specific processing..........
+
+ST helens low res
+
+take a subregion 185, 62   with width etc 362 164
+
+then.... use only pixels that show in RGB, and not just one.
+
+for coontrol rreas
+./main.rb --camera="St_Helens_Low_Res" --experiment="luminesence_enhance_control1" --operation="st_helens_luminesce_enhance" --area="St_Helens_Control_Area_1"
+
+
+clearing out data from the new_stats tables when you do something wrong
+
+DELETE FROM Mean_Table where  ((id) not in (select table_key from New_Stats where table_id = 2)) 
+
+or if you havent deleted the experiment from new_stats use that too.
+
+then delete it from new stats
+<<<<<<< .mine
+==================================================
+ SELECT ns.* FROM New_Stats AS ns,  
+(SELECT src_file_ID FROM New_Stats WHERE Stat_ID IN 
+(SELECT Stat_ID FROM `New_Stats` WHERE `Table_id`=8 and `Experiment_id`=1 AND `Table_key` IN
+(SELECT ID from Thermal_Flux_Table WHERE DATA > 0.2 
+)
+)
+) AS abd, 
+(SELECT src_file_ID FROM New_Stats WHERE Stat_ID IN 
+(SELECT Stat_ID FROM New_Stats WHERE `Table_id`=2 AND `Experiment_id` = 3 AND`Table_Key` IN 
+( SELECT ID from Mean_Table WHERE DATA < 75 
+) 
+) 
+) AS bdb,
+(SELECT src_file_ID FROM New_Stats WHERE Stat_ID IN 
+(SELECT Stat_ID FROM New_Stats WHERE `Table_id`=5 AND `Experiment_id` = 3 AND`Table_Key` IN 
+( SELECT ID from Variance_Table WHERE DATA > 10 
+) 
+) 
+) AS vdb,
+
+ 
+WHERE 
+(abd.src_file_ID = bdb.src_file_ID AND abd.src_file_ID = ns.src_file_ID AND abd.src_file_ID = vbd.src_File_ID ) 
+AND ns.Channel = 13 AND ns.Experiment_id = 1 AND ns.table_id = 1=======
+
+using something like
+
+SELECT * FROM `Image_Data_Table`   WHERE ID in ( SELECT Table_key FROM New_Stats WHERE Table_id = 6 and Experiment_id = 1)
+>>>>>>> .r312
+
+
+-----------------------------------------------------------------------------------------------------
+new task.....n for an experiment remove all of the later dual processing acidentally done in that experiment
+
+SELECT count(*) FROM `New_Stats` WHERE `Experiment_id` = 2 AND
+(src_file_id IN (
+ SELECT id from src_files_table where src_camera = 2
+))
+ group by src_file_id
+ having count(*)>1
+ order by Stat_ID
+
+->
+
+SELECT count(*), src_file_id FROM `New_Stats` WHERE
+`Experiment_id` = 2 AND table_id = 1
+AND (src_file_id IN ( SELECT id from src_files_table where src_camera = 2 ))
+group by src_file_id having count(*) > 1 order by Stat_ID
+
+--->
+SELECT count( * ) , src_file_id
+FROM `New_Stats`
+WHERE `Experiment_id` =2
+AND table_id =1
+AND (
+src_file_id
+IN (
+SELECT id
+FROM src_files_table
+WHERE src_camera =2
+)
+)
+GROUP BY src_file_id
+HAVING count( * ) >4
+ORDER BY src_file_id
+LIMIT 0 , 30
+
+----
+SELECT `Table_id`, count( * ) , src_file_id
+FROM `New_Stats`
+WHERE `Experiment_id` =2
+AND (
+src_file_id
+IN (
+SELECT id
+FROM src_files_table
+WHERE src_camera =2 )
+)
+GROUP BY src_file_id
+HAVING count( * ) >4
+ORDER BY  count(src_file_id) DESC, table_id ASC, src_file_id ASC
+
+----
+
+CREATE VIEW damage_control_view AS
+SELECT `Table_id`, count( * ) , src_file_id
+FROM `New_Stats`
+WHERE `Experiment_id` =2
+AND (
+src_file_id
+IN (
+SELECT id
+FROM src_files_table
+WHERE src_camera =2 )
+)
+GROUP BY Table_id, src_file_id
+ORDER BY  count(src_file_id) DESC, table_id ASC, src_file_id ASC
+
+
+
+-----------------------
+SELECT * FROM `Mean_Table` AS MT,
+ ( SELECT `Table_key`, `src_file_id` FROM `New_Stats` WHERE (`Table_id` = "2" AND  `Experiment_id` = "2" AND `Channel` = "9")) AS NST,
+ (SELECT id,image_date FROM `src_files_table`) AS  SFT
+ WHERE MT.ID = NST.Table_key AND SFT.id = NST.src_file_id
+
+
+and looking nice
+
+SELECT MT.id,MT.DATA, (HOUR(TIME(SFT.image_date))*60)+MINUTE(TIME(SFT.image_date)) FROM `Mean_Table` AS MT,
+ ( SELECT `Table_key`, `src_file_id` FROM `New_Stats` WHERE (`Table_id` = "2" AND  `Experiment_id` = "2" AND `Channel` = "9")) AS NST,
+ (SELECT id,image_date FROM `src_files_table`) AS  SFT
+ WHERE MT.ID = NST.Table_key AND SFT.id = NST.src_file_id

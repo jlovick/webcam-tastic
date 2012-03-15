@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>send_image_to_process (Webcam_processor::Process_webcam)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 1109</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">send_image_to_process</span>(<span class="ruby-identifier">sttime</span>, <span class="ruby-identifier">images_count</span>, <span class="ruby-identifier">thisimage</span>, <span class="ruby-identifier">tesr</span>,  <span class="ruby-identifier">operation</span>, <span class="ruby-identifier">experiment</span>)
+      <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> <span class="ruby-operator">!=</span> <span class="ruby-value str">&quot;NULL&quot;</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span> )
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; working on image #{thisimage.id} #{thisimage.filename}&quot;</span>
+        <span class="ruby-identifier">im</span> = <span class="ruby-constant">Image_stats</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>, <span class="ruby-identifier">tesr</span>)
+        
+        <span class="ruby-keyword kw">case</span> ( <span class="ruby-identifier">operation</span>)
+        <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;channels&quot;</span>
+          <span class="ruby-comment cmt"># slight change here, now we load the image once, and then pass it in</span>
+          <span class="ruby-comment cmt"># to the processing each time, this cuts back on file IO, with only a</span>
+          <span class="ruby-comment cmt"># small overhead in processing memory.</span>
+          <span class="ruby-ivar">@nimg</span> = <span class="ruby-keyword kw">nil</span>
+          <span class="ruby-keyword kw">if</span> (<span class="ruby-constant">File</span>.<span class="ruby-identifier">size</span>(<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span>) <span class="ruby-operator">&gt;</span> <span class="ruby-value">500</span> ) <span class="ruby-comment cmt">#make sure file exists.</span>
+            <span class="ruby-identifier">my_fileimg</span> = <span class="ruby-constant">MultiArray</span>.<span class="ruby-identifier">load_ubytergb</span>( <span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> );
+            <span class="ruby-identifier">my_fileimg</span> = (<span class="ruby-identifier">my_fileimg</span>).<span class="ruby-identifier">to_sfloat</span>;
+            <span class="ruby-ivar">@ch</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">col</span><span class="ruby-operator">|</span> <span class="ruby-comment cmt"># do it for all the basic channels</span>
+              <span class="ruby-identifier">im</span>.<span class="ruby-identifier">load_an_image</span>( <span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">my_fileimg</span>,  <span class="ruby-value str">&quot;channels&quot;</span>  ,<span class="ruby-identifier">col</span> ,<span class="ruby-identifier">experiment</span>)
+            <span class="ruby-keyword kw">end</span>
+          
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-ivar">@nimg</span> = <span class="ruby-keyword kw">nil</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;st_helens_luminesce_enhance&quot;</span>
+          <span class="ruby-identifier">im</span> = <span class="ruby-constant">Image_stats</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>, <span class="ruby-identifier">tesr</span>)
+          <span class="ruby-ivar">@nimg</span> = <span class="ruby-keyword kw">nil</span>
+          <span class="ruby-keyword kw">if</span> (<span class="ruby-constant">File</span>.<span class="ruby-identifier">size</span>(<span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span>) <span class="ruby-operator">&gt;</span> <span class="ruby-value">500</span> ) <span class="ruby-comment cmt">#make sure file exists.</span>
+            <span class="ruby-identifier">my_fileimg</span> = <span class="ruby-constant">MultiArray</span>.<span class="ruby-identifier">load_ubytergb</span>( <span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">filename</span> );
+            <span class="ruby-identifier">my_fileimg</span> = (<span class="ruby-identifier">my_fileimg</span>).<span class="ruby-identifier">to_sfloat</span>;
+            <span class="ruby-identifier">im</span>.<span class="ruby-identifier">load_an_image</span>( <span class="ruby-identifier">thisimage</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">my_fileimg</span> , <span class="ruby-value str">&quot;st_helens_luminesce_enhance&quot;</span>,<span class="ruby-value str">&quot;combined&quot;</span>,<span class="ruby-identifier">experiment</span>)
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-ivar">@it</span> = <span class="ruby-ivar">@it</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+        <span class="ruby-ivar">@tm</span> = <span class="ruby-ivar">@tm</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+        <span class="ruby-identifier">cttime</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">new</span> 
+        <span class="ruby-identifier">inctime</span> = (<span class="ruby-identifier">cttime</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">sttime</span> ) <span class="ruby-operator">/</span> <span class="ruby-ivar">@tm</span>
+        <span class="ruby-identifier">ftime</span> = <span class="ruby-identifier">sttime</span> <span class="ruby-operator">+</span> (<span class="ruby-identifier">inctime</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">images_count</span>)
+        <span class="ruby-identifier">fracti</span> = (<span class="ruby-ivar">@id</span>.<span class="ruby-identifier">to_f</span>  <span class="ruby-operator">*</span> <span class="ruby-value">100.000</span>)<span class="ruby-operator">/</span> <span class="ruby-identifier">images_count</span>.<span class="ruby-identifier">to_f</span>
+        <span class="ruby-keyword kw">if</span> ( <span class="ruby-ivar">@tm</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">500</span>)
+          <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; stored #{thisimage.id}  #{@it} of #{images_count} (#{fracti}%) Ok, finishing at #{ftime.to_s}&quot;</span>
+          <span class="ruby-ivar">@odtime</span> = <span class="ruby-identifier">ftime</span>.<span class="ruby-identifier">to_s</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; stored #{thisimage.id}  #{@it} of #{images_count} (#{fracti}%) Ok, finishing at #{@odtime} &quot;</span>
+        <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-keyword kw">if</span> ( <span class="ruby-ivar">@tm</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">10000</span>)
+          <span class="ruby-ivar">@tm</span> = <span class="ruby-value">1</span>
+          <span class="ruby-identifier">sttime</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">new</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">rescue</span>  <span class="ruby-constant">Exception</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">errcond</span> 
+      <span class="ruby-ivar">@it</span> = <span class="ruby-ivar">@it</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span> 
+      <span class="ruby-ivar">@tm</span> = <span class="ruby-ivar">@tm</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+      <span class="ruby-identifier">msg</span> = <span class="ruby-node">&quot;#{Time.now} an error occured inprocessing \n Error Was : #{errcond} \n #{errcond.message} \n #{errcond.backtrace.inspect}&quot;</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; #{thisimage.id} #{msg} had a processing problem &quot;</span>
+      <span class="ruby-comment cmt"># # exit</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

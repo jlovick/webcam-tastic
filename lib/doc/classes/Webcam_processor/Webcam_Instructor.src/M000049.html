@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>remove_bad_stats (Webcam_processor::Webcam_Instructor)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 119</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remove_bad_stats</span>()
+      <span class="ruby-identifier">all_stats</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_all_stat_id</span>()
+      <span class="ruby-identifier">all_file_ids</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_all_camera_file_id</span>()
+      <span class="ruby-identifier">all_stats</span>.<span class="ruby-identifier">sort</span>
+      <span class="ruby-identifier">all_file_ids</span>.<span class="ruby-identifier">sort</span>
+      <span class="ruby-identifier">unfound</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-identifier">unfound</span> = <span class="ruby-identifier">all_stats</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">all_file_ids</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; found #{all_stats.length} statistics entries, and #{all_file_ids.length} files entries&quot;</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; #{unfound.length} file entries do not exist in table&quot;</span>
+      <span class="ruby-identifier">unfound</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">id</span><span class="ruby-operator">|</span>
+        <span class="ruby-comment cmt">#        @@msh.remove_stat_entry(id)</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; remove statistics entrys for camera id #{id}&quot;</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

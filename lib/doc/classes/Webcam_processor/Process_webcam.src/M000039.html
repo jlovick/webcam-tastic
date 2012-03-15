@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>add_in_avo_images (Webcam_processor::Process_webcam)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 1031</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_in_avo_images</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">filelist</span>)
+      <span class="ruby-identifier">wid</span> =  <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_webcam_id</span>(<span class="ruby-identifier">name</span>)
+      <span class="ruby-identifier">base_url</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_base_url</span>(<span class="ruby-identifier">wid</span>)
+    
+      <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">filelist</span>, <span class="ruby-value str">&quot;r&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">wfl</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">wfl</span>.<span class="ruby-identifier">each_line</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+          <span class="ruby-comment cmt"># puts &quot;Got #{line.dump}&quot;</span>
+          <span class="ruby-identifier">filename</span> = <span class="ruby-value str">&quot;NULL&quot;</span>
+          <span class="ruby-comment cmt"># parse the line to what we need</span>
+          <span class="ruby-identifier">dt</span> = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">dump</span>.<span class="ruby-identifier">slice</span>(<span class="ruby-value">-20</span>,<span class="ruby-value">13</span>)
+          <span class="ruby-identifier">puts</span> <span class="ruby-identifier">dt</span>
+          <span class="ruby-identifier">year</span> = <span class="ruby-identifier">dt</span>[<span class="ruby-value">0</span>,<span class="ruby-value">4</span>].<span class="ruby-identifier">to_i</span>
+          <span class="ruby-identifier">month</span> =  <span class="ruby-identifier">dt</span>[<span class="ruby-value">4</span>,<span class="ruby-value">2</span>]
+          <span class="ruby-identifier">day</span> = <span class="ruby-identifier">dt</span>[<span class="ruby-value">6</span>,<span class="ruby-value">2</span>]
+          <span class="ruby-identifier">hr</span> =  <span class="ruby-identifier">dt</span>[<span class="ruby-value">9</span>,<span class="ruby-value">2</span>].<span class="ruby-identifier">to_i</span>
+          <span class="ruby-identifier">mn</span> =  <span class="ruby-identifier">dt</span>[<span class="ruby-value">11</span>,<span class="ruby-value">2</span>].<span class="ruby-identifier">to_i</span>
+        
+          <span class="ruby-identifier">im_date</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">utc</span>(<span class="ruby-identifier">year</span> ,<span class="ruby-identifier">month</span>.<span class="ruby-identifier">to_i</span>,<span class="ruby-identifier">day</span>.<span class="ruby-identifier">to_i</span> ,<span class="ruby-identifier">hr</span>,<span class="ruby-identifier">mn</span>)
+          <span class="ruby-identifier">puts</span> <span class="ruby-identifier">im_date</span>
+          <span class="ruby-identifier">brurl</span> = <span class="ruby-identifier">base_url</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">year</span>.<span class="ruby-identifier">to_s</span><span class="ruby-operator">+</span><span class="ruby-value str">&quot;/&quot;</span><span class="ruby-operator">+</span><span class="ruby-identifier">month</span><span class="ruby-operator">+</span> <span class="ruby-value str">&quot;/&quot;</span><span class="ruby-operator">+</span><span class="ruby-identifier">day</span><span class="ruby-operator">+</span><span class="ruby-value str">&quot;/&quot;</span><span class="ruby-operator">+</span><span class="ruby-identifier">line</span>
+          <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">add_webcam_image</span>( <span class="ruby-identifier">wid</span>, <span class="ruby-identifier">filename</span>,<span class="ruby-identifier">brurl</span>, <span class="ruby-identifier">im_date</span>.<span class="ruby-identifier">strftime</span>(<span class="ruby-value str">&quot;%Y-%m-%d %H:%M:%S&quot;</span>))
+        <span class="ruby-keyword kw">end</span>
+
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; Done adding  #{name}&quot;</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

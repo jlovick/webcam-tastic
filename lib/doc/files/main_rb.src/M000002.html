@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>usage (main.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File main.rb, line 39</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">usage</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n --------------------------------------------------------------------------------------------------------\n&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n Usage: ./example_program.rb --task=[process,add_images,dmy_stats,remove_bad_stats,gnuplot,output_images] ........\n\n \n&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;for example \n&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;--task=process --camera=VAL --experiment=VAL --operation=VAL --area=VAL --where=VAL&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n --camera=\&quot;Augustine\&quot; --experiment=\&quot;Initial Histograms\&quot; --operation=\&quot;channels\&quot; --area=\&quot;Full\&quot; --where=\&quot; data &gt; 2006 \&quot; &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n\n caries out the operation on the image, and labels it in the database with the experiment name&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n ++++++++++++++++++ \n &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;--task=add_images --camera=VAL --path=VAL --identifier=VAL --ext=VAL&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n --camera=\&quot;Augustine\&quot; --path=\&quot;/export/whale/webcam... \&quot; --identifier=\&quot;Classic\&quot; --ext=\&quot;jpeg\&quot; \n \n adds in images from a directory structure or ?url?&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n ++++++++++++++++++ \n &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;--task=add_all_new_images &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n goes through and adds in all the new st_helens, and kvert camera images&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n ++++++++++++++++++ \n &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;--task=dmy_stats --camera=VAL --output_file=VAL&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n --camera=\&quot;Augustine\&quot; --output_file=\&quot;/tmp/stats_out\&quot; \n \n prints out how many images for that camera occur on what days&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n ++++++++++++++++++ \n &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;--task=remove_bad_stats \n \n makes sure all the statistics refer to image files that exist in the database&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n ++++++++++++++++++ \n &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;--task=gnuplot --camera=VAL --query_file=VAL --column_x=[1..9] --column_y=[1..9] --gnuplot_commands_file=[val] --output_file=VAL&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n ++++++++++++++++++ \n &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;--task=gnuplot_histogram --camera=VAL --channel=VAL --experiment=VAL --output_file=VAL (--statistics_id=VAL or --statistics_id_file=VAL ) --terminal=VAL --gnuplot_output=VAL --additional_gnuplot_commands=[val]  &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n where statistics_id is the src file id number, and output_file is a directory to put that file. terminal is x11, or svg etc \n&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n ++++++++++++++++++ \n &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;--task=find_useful_images --camera=VAL --criteria=VAL&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot; where criteria is one of [ variance, lo_max, hi_min, all ]&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n goes through and makes a note of all images that fullfil a criteria&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n ++++++++++++++++++ \n &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;--task=output_images --camera=VAL --src_file_id=VAL|--id_list_file=VAL --dest_path=VAL  &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot; outputs the image into the directory specified&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n ++++++++++++++++++ \n &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;--task=output_sub_images --camera=VAL --src_file_id=VAL|--id_list_file=VAL --experiment=VAL --channel=VAL --dest_path=VAL  &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot; outputs the image into the directory specified&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n ++++++++++++++++++ \n &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;--task=difference_image --camera=VAL --where=VAL (--control_exp=[] --control_exp=[] ...list of control regions..)  --crater_exp=[]  --channel=[red,green,blue,combined,all]&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot; goes through and subtacts the mean control stats from the target stats for channel normaly use combined, but can use all if required&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n ++++++++++++++++++ \n &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;--task=mean_control_image --camera=VAL --where=VAL (--control_exp=[] --control_exp=[] ...list of control regions..)  --channel=[red,green,blue,combined,all]&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot; goes through and makes the mean control stats.... for channel normaly use combined, but can use all if required &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n ++++++++++++++++++ \n &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;--task=thermal_stats --camera=VAL --where=VAL  &quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot; calculates the thermal stats based on images residual histograms&quot;</span>
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n ++++++++++++++++++ \n &quot;</span>
+  
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n&quot;</span>
+  
+  
+  <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n --------------------------------------------------------------------------------------------------------\n&quot;</span>
+  <span class="ruby-identifier">exit</span> <span class="ruby-value">1</span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

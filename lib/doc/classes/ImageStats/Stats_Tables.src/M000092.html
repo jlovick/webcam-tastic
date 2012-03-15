@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (ImageStats::Stats_Tables)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File new_stats.rb, line 233</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">msh</span>,<span class="ruby-identifier">table_key</span>, <span class="ruby-identifier">my_table_id</span>, <span class="ruby-identifier">load_me_up</span>)
+        <span class="ruby-ivar">@table_name</span> = (<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>).<span class="ruby-identifier">to_s</span>
+        <span class="ruby-ivar">@@msh</span> = <span class="ruby-identifier">msh</span>
+        <span class="ruby-ivar">@table_key</span> = <span class="ruby-identifier">table_key</span>
+        <span class="ruby-ivar">@table_id</span> = <span class="ruby-identifier">my_table_id</span>
+        <span class="ruby-comment cmt"># puts &quot; making a #{@table_name}&quot; </span>
+        <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">load_me_up</span>) 
+          <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">refresh</span>(<span class="ruby-identifier">table_key</span>)
+        <span class="ruby-keyword kw">end</span>
+       <span class="ruby-comment cmt"># puts &quot; finnished making a table&quot;</span>
+      <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

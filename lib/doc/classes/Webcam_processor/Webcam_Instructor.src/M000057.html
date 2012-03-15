@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>mean_control_image (Webcam_processor::Webcam_Instructor)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File webcam_processor.rb, line 352</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">mean_control_image</span>( <span class="ruby-identifier">img_where</span>, <span class="ruby-identifier">control_exp</span>, <span class="ruby-identifier">channel</span>)
+      <span class="ruby-comment cmt"># allot of this is cut and paste from the difference image code</span>
+      <span class="ruby-identifier">chlist</span> = <span class="ruby-constant">ImageStats</span><span class="ruby-operator">::</span><span class="ruby-constant">Channel_Table_List</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>)
+      <span class="ruby-identifier">pp</span> <span class="ruby-identifier">channel</span>
+      <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">channel</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-value str">&quot;all&quot;</span>) )
+        
+        <span class="ruby-identifier">channel</span> = <span class="ruby-identifier">chlist</span>.<span class="ruby-identifier">get_all_channel_names</span>()
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">data_tables</span> = <span class="ruby-constant">ImageStats</span><span class="ruby-operator">::</span><span class="ruby-constant">Stat_Table_List</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>)
+      <span class="ruby-identifier">exp_table</span> = <span class="ruby-constant">ImageStats</span><span class="ruby-operator">::</span><span class="ruby-constant">Experiment_Table_List</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>)
+      <span class="ruby-identifier">exp_id</span>=<span class="ruby-identifier">exp_table</span>.<span class="ruby-identifier">get_experiment_id</span>(<span class="ruby-value str">&quot;Mean_Control&quot;</span>)
+      <span class="ruby-identifier">control_exp</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">cont_exp</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; experiment #{cont_exp} has id #{exp_table.get_experiment_id(cont_exp)} &quot;</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">img</span> = <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_all_unprocessed_camera_images</span>( <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_webcam_id</span>( <span class="ruby-ivar">@current_webcam</span> ), <span class="ruby-identifier">exp_id</span>, <span class="ruby-identifier">img_where</span>)
+      <span class="ruby-identifier">img</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">img_a</span><span class="ruby-operator">|</span>
+        <span class="ruby-comment cmt">#       pp img_a</span>
+        <span class="ruby-identifier">img_id</span> = <span class="ruby-identifier">img_a</span>.<span class="ruby-identifier">id</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; img id #{img_id} &quot;</span>
+        <span class="ruby-identifier">channel</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ch_name</span><span class="ruby-operator">|</span>
+          <span class="ruby-identifier">ch_id</span> = <span class="ruby-identifier">chlist</span>.<span class="ruby-identifier">get_channel_id</span>(<span class="ruby-identifier">ch_name</span>)
+          <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; doing #{img_id} #{ch_id} #{exp_id} &quot;</span>
+          <span class="ruby-identifier">scb</span> = <span class="ruby-constant">ImageStats</span><span class="ruby-operator">::</span><span class="ruby-constant">Stats_Collection</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@@msh</span>, <span class="ruby-identifier">img_id</span>, <span class="ruby-identifier">exp_id</span>, <span class="ruby-identifier">ch_id</span>)
+          <span class="ruby-identifier">raw_control_stats</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span> 
+          <span class="ruby-identifier">control_exp</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">cont_exp</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">raw_control_stats</span>.<span class="ruby-identifier">push</span>( <span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_stats_collection</span>(<span class="ruby-identifier">img_id</span>, <span class="ruby-identifier">exp_table</span>.<span class="ruby-identifier">get_experiment_id</span>(<span class="ruby-identifier">cont_exp</span>), <span class="ruby-identifier">ch_id</span>) )
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">cont_max</span> = <span class="ruby-keyword kw">nil</span>
+          <span class="ruby-identifier">cont_min</span> = <span class="ruby-keyword kw">nil</span>
+          <span class="ruby-identifier">cont_mean_a</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+          <span class="ruby-identifier">cont_var_a</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+          <span class="ruby-identifier">hsarr</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+          
+          <span class="ruby-identifier">raw_control_stats</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">cd</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">cd</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">cc</span><span class="ruby-operator">|</span>
+              <span class="ruby-comment cmt">#   pp cc</span>
+              <span class="ruby-identifier">this_tables_name</span> = <span class="ruby-identifier">data_tables</span>.<span class="ruby-identifier">get_table_name</span>( <span class="ruby-identifier">cc</span>.<span class="ruby-identifier">table_id</span> )
+              <span class="ruby-identifier">control_result</span>=<span class="ruby-ivar">@@msh</span>.<span class="ruby-identifier">get_stats_data</span>(<span class="ruby-identifier">this_tables_name</span>, <span class="ruby-identifier">cc</span>.<span class="ruby-identifier">table_key</span>)
+              <span class="ruby-comment cmt">#         puts &quot; table name #{this_tables_name}&quot;</span>
+              <span class="ruby-keyword kw">case</span> (<span class="ruby-identifier">this_tables_name</span>)
+              <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;Mean_Table&quot;</span>
+                <span class="ruby-identifier">cont_mean_a</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">control_result</span>[<span class="ruby-value str">&quot;DATA&quot;</span>].<span class="ruby-identifier">to_f</span> )
+              <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;Max_Table&quot;</span>
+                <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">cont_max</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>)
+                  <span class="ruby-identifier">cont_max</span> = [<span class="ruby-identifier">control_result</span>[<span class="ruby-value str">&quot;DATA&quot;</span>].<span class="ruby-identifier">to_f</span> , <span class="ruby-identifier">cont_max</span>].<span class="ruby-identifier">max</span>
+                <span class="ruby-keyword kw">else</span>  
+                  <span class="ruby-identifier">cont_max</span> = <span class="ruby-identifier">control_result</span>[<span class="ruby-value str">&quot;DATA&quot;</span>].<span class="ruby-identifier">to_f</span>;
+                <span class="ruby-keyword kw">end</span>
+              <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;Min_Table&quot;</span>
+                <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">cont_min</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>)
+                  <span class="ruby-identifier">cont_min</span> = [<span class="ruby-identifier">control_result</span>[<span class="ruby-value str">&quot;DATA&quot;</span>].<span class="ruby-identifier">to_f</span>, <span class="ruby-identifier">cont_min</span>].<span class="ruby-identifier">min</span>
+                <span class="ruby-keyword kw">else</span>
+                  <span class="ruby-identifier">cont_min</span> = <span class="ruby-identifier">control_result</span>[<span class="ruby-value str">&quot;DATA&quot;</span>].<span class="ruby-identifier">to_f</span>
+                <span class="ruby-keyword kw">end</span>
+              <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;Variance_Table&quot;</span>
+                <span class="ruby-identifier">cont_var_a</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">control_result</span>[<span class="ruby-value str">&quot;DATA&quot;</span>].<span class="ruby-identifier">to_f</span> )
+              <span class="ruby-keyword kw">when</span> <span class="ruby-value str">&quot;Histogram_Table&quot;</span>
+                <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">chlist</span>.<span class="ruby-identifier">get_channel_id</span>(<span class="ruby-value str">&quot;combined&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-identifier">ch_id</span>)
+                  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; got a histogram (a)&quot;</span>
+                  <span class="ruby-identifier">hsarr</span>.<span class="ruby-identifier">push</span>( <span class="ruby-constant">NArray</span>.<span class="ruby-identifier">to_na</span>((<span class="ruby-constant">Marshal</span>.<span class="ruby-identifier">load</span>(<span class="ruby-identifier">control_result</span>[<span class="ruby-value str">&quot;DATA&quot;</span>].<span class="ruby-identifier">strip</span>))) )
+                <span class="ruby-keyword kw">end</span>              
+              <span class="ruby-keyword kw">end</span>
+              
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; done with getting control stats from DB&quot;</span>
+          <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">cont_mean_a</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+            <span class="ruby-identifier">cont_mean</span> = <span class="ruby-constant">NArray</span>.<span class="ruby-identifier">to_na</span>(<span class="ruby-identifier">cont_mean_a</span>).<span class="ruby-identifier">mean</span>
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">cont_mean</span> = <span class="ruby-keyword kw">nil</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">cont_var_a</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+            <span class="ruby-identifier">cont_var</span> = <span class="ruby-constant">NArray</span>.<span class="ruby-identifier">to_na</span>(<span class="ruby-identifier">cont_var_a</span>).<span class="ruby-identifier">mean</span>
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">cont_var_a</span> = <span class="ruby-keyword kw">nil</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">hbrr</span> = <span class="ruby-keyword kw">nil</span>
+          <span class="ruby-identifier">count</span> = <span class="ruby-value">0</span>
+          <span class="ruby-identifier">itsum</span> = <span class="ruby-value">0</span>
+          <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">chlist</span>.<span class="ruby-identifier">get_channel_id</span>(<span class="ruby-value str">&quot;combined&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-identifier">ch_id</span>)
+           
+            <span class="ruby-identifier">hsarr</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">it</span><span class="ruby-operator">|</span>
+              <span class="ruby-keyword kw">if</span> (<span class="ruby-operator">!</span><span class="ruby-identifier">hbrr</span>)
+                <span class="ruby-identifier">hbrr</span> = <span class="ruby-identifier">it</span>
+              <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">hbrr</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">it</span>
+              <span class="ruby-keyword kw">end</span>
+              <span class="ruby-identifier">count</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+              <span class="ruby-identifier">itsum</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">it</span>.<span class="ruby-identifier">sum</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">if</span> ((<span class="ruby-identifier">hbrr</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>) <span class="ruby-operator">&amp;&amp;</span> (<span class="ruby-identifier">hbrr</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>) )
+              <span class="ruby-identifier">hbrr</span> = <span class="ruby-identifier">hbrr</span> <span class="ruby-operator">/</span> ( <span class="ruby-identifier">itsum</span>)
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-identifier">hbrr</span> = <span class="ruby-keyword kw">nil</span>
+            <span class="ruby-keyword kw">end</span>
+         
+            <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; doing histogram  &quot;</span>
+            <span class="ruby-comment cmt"># crat_hist = NArray.to_na( Marshal.load(crater_stat[9].strip) )</span>
+           
+            <span class="ruby-identifier">res_hist</span> = <span class="ruby-identifier">hbrr</span>
+            <span class="ruby-identifier">dp</span> = <span class="ruby-constant">Marshal</span>.<span class="ruby-identifier">dump</span>( <span class="ruby-identifier">res_hist</span>.<span class="ruby-identifier">to_a</span>)
+            <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">add_table</span>(<span class="ruby-value str">&quot;Histogram_Table&quot;</span>, <span class="ruby-identifier">:histogram</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">dp</span>)
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">add_table</span>(<span class="ruby-value str">&quot;Mean_Table&quot;</span>, <span class="ruby-identifier">:mean</span> =<span class="ruby-operator">&gt;</span> ( <span class="ruby-identifier">cont_mean</span>.<span class="ruby-identifier">to_f</span>) )
+          <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">add_table</span>(<span class="ruby-value str">&quot;Max_Table&quot;</span>, <span class="ruby-identifier">:max</span> =<span class="ruby-operator">&gt;</span> ( <span class="ruby-identifier">cont_max</span>.<span class="ruby-identifier">to_f</span>) )
+          <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">add_table</span>(<span class="ruby-value str">&quot;Min_Table&quot;</span>, <span class="ruby-identifier">:min</span> =<span class="ruby-operator">&gt;</span> ( <span class="ruby-identifier">cont_min</span>.<span class="ruby-identifier">to_f</span>) )
+          <span class="ruby-identifier">scb</span>.<span class="ruby-identifier">add_table</span>(<span class="ruby-value str">&quot;Variance_Table&quot;</span>, <span class="ruby-identifier">:variance</span> =<span class="ruby-operator">&gt;</span> ( <span class="ruby-identifier">cont_var</span>.<span class="ruby-identifier">to_f</span>) )
+          <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; done with avarging (etc) the control-stats stats&quot;</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; finnished making mean control stats&quot;</span>
+    
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

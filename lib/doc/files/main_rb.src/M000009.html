@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>gnuplot_histogram (main.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File main.rb, line 197</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">gnuplot_histogram</span>()
+  <span class="ruby-identifier">cam</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">of</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">st_num</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">st_file</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">coms</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">disp</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">output</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">channel</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-identifier">exp</span> = <span class="ruby-keyword kw">nil</span>
+  <span class="ruby-constant">ARGV</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">arg</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">arg</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--camera=([\ 0-9A-Za-z._]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">cam</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--output_file=([\ 0-9A-Za-z._\/]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">of</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--statistics_id=((\d*\ *)(.*))\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">st_num</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--statistics_id_file=((.*)+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">st_file</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--channel=([\A-Za-z]*)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">channel</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--experiment=(.*)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">exp</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--additional_gnuplot_commands=([\ 0-9A-Za-z._\/]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">coms</span> = <span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--terminal=(.*)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">disp</span>=<span class="ruby-identifier">$1</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-regexp re">/\A--gnuplot_output=([\ 0-9A-Za-z._\/]+)\Z/</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">output</span>=<span class="ruby-identifier">$1</span>
+        
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span>(<span class="ruby-identifier">cam</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">of</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">exp</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">channel</span> <span class="ruby-keyword kw">and</span> (<span class="ruby-identifier">st_num</span> <span class="ruby-keyword kw">or</span> <span class="ruby-identifier">st_file</span>) )
+    <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;gnuplot_histogram\n ERROR..... cant parse arguments cam=\&quot;#{cam}\&quot;, of=\&quot;#{of}\&quot;, exp=\&quot;#{exp}\&quot; , channel=\&quot;#{channel}\&quot; , src_file_id\&quot;#{st_num}\&quot;, &quot;</span>
+    <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;terminal \&quot;#{disp}\&quot;, ids-src_file\&quot;#{st_file}\&quot;, gnuplot-comms\&quot;#{coms}\&quot; \n\n\n &quot;</span>
+    <span class="ruby-identifier">usage</span>()
+  <span class="ruby-keyword kw">end</span>
+  <span class="ruby-identifier">wc</span> = <span class="ruby-constant">Webcam_processor</span><span class="ruby-operator">::</span><span class="ruby-constant">Webcam_Instructor</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cam</span>,<span class="ruby-value str">&quot;&quot;</span>, <span class="ruby-value str">&quot;&quot;</span>, <span class="ruby-value str">&quot;&quot;</span>)
+  <span class="ruby-identifier">wc</span>.<span class="ruby-identifier">gnuplot_histogram</span>(<span class="ruby-identifier">of</span>,<span class="ruby-identifier">exp</span>, <span class="ruby-identifier">channel</span>, <span class="ruby-identifier">st_num</span>,<span class="ruby-identifier">st_file</span>,<span class="ruby-identifier">coms</span>,<span class="ruby-identifier">disp</span>,<span class="ruby-identifier">output</span>)
+  <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>  
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
