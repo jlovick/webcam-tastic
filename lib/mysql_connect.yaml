@@ -11,3 +11,10 @@
   hostname: hasiputi
   password: tetsu0tetsu0
   username: root
+- !ruby/object:Mysql_login_info
+  database: webcam_processing
+  host: localhost
+  hostname: Gorilla
+  password: tetsu0tetsu0
+  username: root
+

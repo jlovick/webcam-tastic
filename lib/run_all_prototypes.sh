@@ -4,7 +4,7 @@ for a in `seq 0 $1`
 do
 if [ $a -lt $1 ]
 then
-nice /home/jlovick/scripts/auto_restart.sh ./prototype.sh $1 $a &
+nice ./prototype.sh $1 $a &
 echo "$1 $a started"
 sleep 2s
 fi

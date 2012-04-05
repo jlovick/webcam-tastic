@@ -6,6 +6,7 @@ require "sequel"
 require 'logger'
 require "socket"
 require "pp"
+require "yaml"
 
 class Mysql_login_info
   attr_accessor :username, :password, :hostname, :database, :host
@@ -37,7 +38,7 @@ begin
     end
         
   else
-    puts " writen out the default conncetion to a config file for you convience "
+    puts " need a  default conncetion to a config file"
     exit 0;
   end
 

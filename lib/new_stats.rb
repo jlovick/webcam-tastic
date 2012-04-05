@@ -9,7 +9,7 @@ require "./threading.rb"
 require "./general_tools.rb"
 require "./webcam_processor.rb"
 require "fileutils"
-require 'hornetseye'
+require 'hornetseye_rmagick'
 require 'narray'
 require 'mathn'
 require 'matrix'

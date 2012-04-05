@@ -12,8 +12,10 @@ module Webcam_processor
   require "./webcam_processor.rb"
   require "./new_stats.rb"
   require "fileutils"
-  require 'ftools'
-  require 'hornetseye'
+#  require 'hornetseye_xorg'
+  require 'hornetseye_narray'
+  require 'malloc'
+  require 'multiarray'
   require 'narray'
   require 'mathn'
   require 'matrix'
@@ -26,6 +28,7 @@ module Webcam_processor
   require 'pp'
   require "gnuplot"
   require 'strscan'
+  include Hornetseye
 
   class Webcam_Instructor
     attr_reader :current_webcam, :experiment , :operation, :area
@@ -61,8 +64,8 @@ module Webcam_processor
     end
     
     def import_all_webcams()
-      #      @pw.add_in_images("St_Helens_Hi_res", "/raid/webcam-archive/St_Helens/Hi_Res/","",".jpeg")
-      #      @pw.add_in_images("St_Helens_Low_res", "/raid/webcam-archive/St_Helens/Low_Res/","",".jpeg")
+            @pw.add_in_images("St_Helens_Hi_res", "/export/whale/webcam-data/St_Helens_Hi_Res/","",".jpeg")
+            @pw.add_in_images("St_Helens_Low_res", "/export/whale/webcam-data/St_Helens_Lo_Res/","",".jpeg")
       #      @pw.add_in_images("Shiveluch", "/raid/webcam-archive/Shiveluch/","",".jpeg")
       #      @pw.add_in_images("Bezymianny", "/raid/webcam-archive/Bezymianny/","",".jpeg")
       #  @pw.add_in_images("Klyuchevskoy", "/mnt/worlddrive/webcam_images/Klyuchevskoy/","",".jpeg")
@@ -770,7 +773,7 @@ module Webcam_processor
       ny = @image_proto.height.to_i
        
        
-      img = (@nimg).to_multiarray()
+      img = @nimg
       res_r = img.r.to_narray();
       res_g = img.g.to_narray();
       res_b = img.b.to_narray();
@@ -806,9 +809,9 @@ module Webcam_processor
         pixels = image_to_pixel_matrix( channel  )
       when "st_helens_luminesce_enhance"
         pixels = st_helens_lumninesce_enhance(image_id,experiment)
-        outimg = (pixels.to_na).to_hornetseye()
-        fname = "/home/jlovick/tmp/images/#{experiment}-#{image_id}.jpeg"
-        outimg.to_grey8.save( fname );
+        outimg = (pixels.to_na).to_multiarray()
+        fname = "/tmp/images/#{experiment}-#{image_id}.jpeg"
+        outimg.save_ubyte ( fname );
         outimg = nil
         puts " written #{fname}"
         f = open(fname,'r')

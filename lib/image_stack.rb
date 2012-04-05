@@ -4,7 +4,7 @@
 
 # To change this template, choose Tools | Templates and open the template in the
 # editor.
-require 'hornetseye'
+require 'hornetseye_rmagick'
 require 'narray'
 require("gsl")
 require 'pp'
