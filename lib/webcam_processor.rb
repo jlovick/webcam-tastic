@@ -68,8 +68,8 @@ module Webcam_processor
             @pw.add_in_images("St_Helens_Low_res", "/export/whale/webcam-data/St_Helens_Lo_Res/","",".jpeg")
       #      @pw.add_in_images("Shiveluch", "/raid/webcam-archive/Shiveluch/","",".jpeg")
       #      @pw.add_in_images("Bezymianny", "/raid/webcam-archive/Bezymianny/","",".jpeg")
-      #  @pw.add_in_images("Klyuchevskoy", "/mnt/worlddrive/webcam_images/Klyuchevskoy/","",".jpeg")
-    puts " not set up at the moment due to svn / machine difference issues"
+        @pw.add_in_images("Klyuchevskoy", "/export/whale/webcam-data/Klyuchevskoy/","",".jpeg")
+  #  puts " not set up at the moment due to svn / machine difference issues"
     end
     
     def import_webcam(path,id,ext)
@@ -808,8 +808,10 @@ module Webcam_processor
       when "channels"
         pixels = image_to_pixel_matrix( channel  )
       when "st_helens_luminesce_enhance"
-        pixels = st_helens_lumninesce_enhance(image_id,experiment)
-        outimg = (pixels.to_na).to_multiarray()
+        bpixels = st_helens_lumninesce_enhance(image_id,experiment)
+        pixels = bpixels.clone
+	outimg = (bpixels.to_na).to_multiarray()
+	puts pixels.inspect
         fname = "/tmp/images/#{experiment}-#{image_id}.jpeg"
         outimg.save_ubyte ( fname );
         outimg = nil
@@ -821,7 +823,7 @@ module Webcam_processor
         scb.add_table(@@tbl_list.get_table_id("Image_Data_Table"), :image_data => tbl_img, :image_data_type => "jpg" )
         puts " stored #{fname} as a binary blob in the \"Image_Data_Table\" table in the DB"
       end
-      @nimg = nil
+      #     @nimg = nil
     
       #    pna = nil
       #    gma = nil
@@ -838,7 +840,6 @@ module Webcam_processor
       #  window.show
       #  output.write( hni )
       #  display.eventLoop
-
       mean = GSL::Stats::mean(pixels,1)
       max = GSL::Stats::max(pixels,1)
       min = GSL::Stats::min(pixels,1)

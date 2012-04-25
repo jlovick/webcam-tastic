@@ -17,4 +17,10 @@
   hostname: Gorilla
   password: tetsu0tetsu0
   username: root
+- !ruby/object:Mysql_login_info
+  database: webcam_processing
+  host: gorilla.anatexis.net
+  hostname: gentoo-a
+  password: tetsu0tetsu0
+  username: root
 

@@ -317,6 +317,7 @@ module Mysql_Handler
     res_a = @dbh.query(query_1)
     res_b = @dbh.query(query_2)
     puts " finding unprocessed rows "
+    puts " res_a returned #{res_a.num_rows}    res_b returned #{res_b.num_rows} "
     if (res_a.num_rows > 0)
       all_files = Array.new
       done_files = Array.new
