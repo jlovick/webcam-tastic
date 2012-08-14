@@ -1,4 +1,26 @@
- SELECT DISTINCT src_file_id, `Stat_ID` , lt.image_date, statistics.max
+==
+
+  to run 
+    > ruby main.rb 
+
+  it should give you lots of command line options
+
+  useful sql is  bellow that will help pull things out of the database
+
+  this was writen primarily in ruby 1.8.7 which only has softthreads, that did not work well with hornetseye
+
+  the shell scripts provide a way of subdiving a problem and distributing it to various different machines.
+
+  it is often easier to write a small program to grab just what you need for analysis of your data 
+  rather than use the main, ingestion analysis program, database_dump_bright.rb is inteded to be example
+  of how to do this.
+
+   
+==
+
+
+
+SELECT DISTINCT src_file_id, `Stat_ID` , lt.image_date, statistics.max
 FROM statistics
 JOIN (
 
