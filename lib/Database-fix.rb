@@ -7,7 +7,7 @@ require 'logger'
 
 
 begin
-  DB = Sequel.mysql(:host=>'localhost', :user=>'jlovick', :password=>'gZYNcqdh1', :database=>'webcam_processing')
+  DB = Sequel.mysql(:host=>'localhost', :user=>'jlovick', :password=>'<<password>>', :database=>'webcam_processing')
   DB.loggers << Logger.new($stdout)
   all_src_files = DB.from(:src_files_table).filter(:src_camera => 2).select(:id)
   test = DB[:New_Stats].
